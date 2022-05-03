@@ -1,34 +1,36 @@
-public class Epic extends Task {
-    String nameEpic;
-    String description;
-    Status status;
-    int epicId;
-    int subtaskId;
+import java.util.ArrayList;
 
-    public Epic(String nameEpic, String description, int epicId, int subtaskId) {
-        this.nameEpic = nameEpic;
+public class Epic extends Task {
+    //String nameEpic;
+    //String description;
+    //Status status;
+    int epicId;
+    //int subtaskId;
+    ArrayList<Integer>subtaskId;
+
+    public Epic(String nameEpic, String description, ArrayList<Integer>subtaskId) {
+        this.name = nameEpic;
         this.description = description;
-        this.epicId = epicId;
-        this.subtaskId = subtaskId;
+        //this.epicId = epicId;
+        //this.subtaskId = subtaskId;
         this.status = Status.NEW;
+        this.subtaskId=subtaskId;
     }
 
     @Override
     public String toString() {
-        return "Epic{" +
-                "nameEpic='" + nameEpic + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                ", epicId=" + epicId +
-                '}';
+        return "Эпик "+ taskId +":      '" + name + '\'' +
+                ", Описание='" + description + '\'' +
+                ", Статус=" + status
+                ;
     }
 
     public String getNameEpic() {
-        return nameEpic;
+        return name;
     }
 
     public void setNameEpic(String nameEpic) {
-        this.nameEpic = nameEpic;
+        this.name = nameEpic;
     }
 
     @Override
@@ -59,11 +61,11 @@ public class Epic extends Task {
         this.epicId = epicId;
     }
 
-    public int getSubtaskId() {
+    public ArrayList<Integer> getSubtaskId() {
         return subtaskId;
     }
 
-    public void setSubtaskId(int subtaskId) {
+    public void setSubtaskId(ArrayList<Integer> subtaskId) {
         this.subtaskId = subtaskId;
     }
 }

@@ -1,34 +1,32 @@
 public class Task {
-    String nameTask;
+    String name;
     String description;
     int taskId;
     Status status;
 
-    public Task(String nameTask, String description, int taskId) {
-        this.nameTask = nameTask;
+    public Task(String name, String description) {
+        this.name = name;
         this.description = description;
-        this.taskId = taskId;
         this.status = Status.NEW;
     }
 
     @Override
     public String toString() {
-        return "ID " + taskId +
-                " Задача ==> '" + nameTask + '\'' +
+        return  "Задача "+ taskId +":    '" + name + '\'' +
                 ", Описание='" + description + '\'' +
-                ", Статус=" + status +
-                '}';
+                ", Статус=" + status
+                ;
     }
 
     public Task() {
     }
 
-    public String getNameTask() {
-        return nameTask;
+    public String getName() {
+        return name;
     }
 
-    public void setNameTask(String nameTask) {
-        this.nameTask = nameTask;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {

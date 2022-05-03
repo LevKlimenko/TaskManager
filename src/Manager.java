@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -6,7 +7,7 @@ import java.util.HashMap;
  * Создаем классы с конструкторами для task,epic,subtask, с параметрами, которые у нас указаны в задании.
  * Так же создаем еще 2 класса. Manager и Enum(для всех вычислений и для списка статусов соответственно).
  * дальше в манагер мы добавлем объекты классов Task,Subtask,Epic и делаем их хэшмапами у которых ключ - id,
- * который после создания задачи имеет id++
+ * который после создания задачи имеет id++    ->>>>>> DONE
  */
 
 /**
@@ -38,45 +39,60 @@ public class Manager {
                 ;
     }
 
-    //здесь мы добавляем значение ID к задачам.
+    //здесь мы добавляем значение ID к задачам,эпикам и субтаскам
     public void addNewTask(Task task) {
         int id = ++generatorId; //устанавливаем значение ID для новой задачи
         task.setTaskId(id);
         tasks.put(id,task);
         }
+
+    public void addNewEpic(Epic epic) {
+        int id = ++generatorId;
+        epic.setTaskId(id);
+        epics.put(id, epic);
+    }
+
+    public void addNewSubTask(Subtask subtask, int epicId) {
+        int id = ++generatorId;
+        subtask.setTaskId(id);
+        subtasks.put(id, subtask);
+        epics.get(epicId).subtaskId.add(id);
+
+    }
+
+
+
     //закончили блок
 
     //Смена статуса задачи
-    public void changeStatusTask(Task task, int key) {
-        if (key==1) {
+    public void changeStatusTask(int id,Task task) {
+        if (task.status==Status.NEW) {
             task.setStatus(Status.IN_PROGRESS);
         }
-        else if (key==2){
+        else if (task.status==Status.IN_PROGRESS){
             task.setStatus(Status.DONE);
         }
         else {
             task.status=task.getStatus();
         }
+        tasks.put(task.getTaskId(),task);
     }
 
 
-    public void changeStatusSubtask(Subtask subtask) {
-        subtask.setStatus(Status.IN_PROGRESS);
+    public void changeStatusSubtask(Subtask subTask) {
+        if (subTask.status==Status.NEW) {
+            subTask.setStatus(Status.IN_PROGRESS);
+        }
+        else if (subTask.status==Status.IN_PROGRESS){
+            subTask.setStatus(Status.DONE);
+        }
+        else {
+            subTask.status=subTask.getStatus();
+        }
     }
-    //конец смены статуса задачи.Добавить смену статуса Эпика при смене всех Субтасков.
+   //конец смены статуса задачи.Добавить смену статуса Эпика при смене всех Субтасков.
 
 
-    public void addNewEpic(Epic epic) {
-        final int id = ++generatorId;
-        epic.setEpicId(id);
-        epics.put(id, epic);
-    }
-
-    public void addNewSubTask(Subtask subtask) {
-        final int id = ++generatorId;
-        epic.setEpicId(id);
-        epics.put(id, epic);
-    }
 
     //Блок удаления данных
     public void clearAllTask() {

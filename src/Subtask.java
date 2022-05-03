@@ -1,11 +1,11 @@
 public class Subtask extends Task{
-    String nameSubtask;
-    String description;
-    Status status;
+    //String name;
+    //String description;
+    //Status status;
     int epicId;
 
     public Subtask(String nameSubtask, String description, int epicId) {
-        this.nameSubtask = nameSubtask;
+        this.name = nameSubtask;
         this.description = description;
         this.status = Status.NEW;
         this.epicId = epicId;
@@ -13,20 +13,18 @@ public class Subtask extends Task{
 
     @Override
     public String toString() {
-        return "Subtask{" +
-                "nameSubtask='" + nameSubtask + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                ", epicId=" + epicId +
-                '}';
+        return "Подзадача "+ taskId +": '" + name + '\'' +
+                ", Описание='" + description + '\'' +
+                ", Статус=" + status+ " Epic->" + epicId;
+
     }
 
-    public String getNameSubtask() {
-        return nameSubtask;
+    public String getName() {
+        return name;
     }
 
-    public void setNameSubtask(String nameSubtask) {
-        this.nameSubtask = nameSubtask;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
