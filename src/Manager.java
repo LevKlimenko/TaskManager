@@ -18,6 +18,21 @@ import java.util.HashMap;
  * HashMap<Integer, Subtask> - Integer это Id задачи
  * в задании должны переопределять методы toString equals hashcode
  */
+
+/**
+ * Методы для каждого из типа задач(Задача/Эпик/Подзадача):
+ * -Получение списка всех задач. --->Done
+ * -Удаление всех задач.  ---> Done
+ * -Получение по идентификатору. --> Done
+ * -Создание. Сам объект должен передаваться в качестве параметра. -->Done
+ * -Обновление. Новая версия объекта с верным идентификатором передаются в виде параметра.
+ * -Удаление по идентификатору.
+ */
+
+/**
+ * Дополнительные методы:
+ * -Получение списка всех подзадач определённого эпика.   --->Done
+ */
 public class Manager {
     Task task;
     Epic epic;
@@ -56,8 +71,8 @@ public class Manager {
         int id = ++generatorId;
         subtask.setTaskId(id);
         subtasks.put(id, subtask);
-        epics.get(epicId).subtaskId.add(id);
-        checkEpic(epics.get(subtask.epicId));
+        epics.get(epicId).getSubtaskId().add(id);
+        checkEpic(epics.get(subtask.getEpicId()));
 
 
     }
@@ -84,31 +99,20 @@ public class Manager {
             subtask.status = subtask.getStatus();
         }
         subtasks.put(subtask.getTaskId(), subtask);
-
-            checkEpic(epics.get(subtask.epicId));
-
-
-     }
-
-
-
-
-    //конец смены статуса задачи.Добавить смену статуса Эпика при смене всех Субтасков.
-
+        checkEpic(epics.get(subtask.getEpicId()));
+    }
 
     //печать Эпика ---> работает
     public void printEpic(Epic epic) {
-        System.out.println("_________________");
+        System.out.println("");
         System.out.println(epic);
-        for (int i = 0; i < epic.subtaskId.size(); i++) {
-            if (subtasks.get(epic.subtaskId.get(i)) != null) {
-                System.out.println(subtasks.get(epic.subtaskId.get(i)));
+        for (int i = 0; i < epic.getSubtaskId().size(); i++) {
+            if (subtasks.get(epic.getSubtaskId().get(i)) != null) {
+                System.out.println(subtasks.get(epic.getSubtaskId().get(i)));
             }
         }
-        System.out.println("_________________");
-
+        System.out.println("");
     }
-
 
     public void printAll() {
         for (int i = 0; i <= generatorId; i++) {
@@ -118,76 +122,58 @@ public class Manager {
             if (epics.containsKey(i)) {
                 printEpic(epics.get(i));
             }
+        }
+    }
 
+    public void printById(int id){
+        if (tasks.containsKey(id)) {
+            System.out.println(tasks.get(id));
+        }
+        if (epics.containsKey(id)) {
+            printEpic(epics.get(id));
+        }
+        if (subtasks.containsKey(id)) {
+            System.out.println(subtasks.get(id));
         }
     }
 
 
     //Блок удаления данных
     public void clearAllTask() {
-        epics.clear();
         subtasks.clear();
+        epics.clear();
         tasks.clear();
         generatorId = 0;
     }
-    /**
-     * Управление статусами осуществляется по следующему правилу:
-     * Менеджер сам не выбирает статус для задачи. Информация о нём приходит менеджеру вместе с информацией
-     * о самой задаче. По этим данным в одних случаях он будет сохранять статус, в других будет рассчитывать.
-     * Для эпиков:
-     * -если у эпика нет подзадач или все они имеют статус NEW, то статус должен быть NEW.
-     * -если все подзадачи имеют статус DONE, то и эпик считается завершённым — со статусом DONE.
-     * -во всех остальных случаях статус должен быть IN_PROGRESS.
-     */
+
     //проверка на статусы
     public void checkEpic(Epic epic) {
         int check = 0;
-
-        for (int i = 0; i < epic.subtaskId.size(); i++) {
-
-            if (((subtasks.get(epic.subtaskId.get(i)).status==Status.IN_PROGRESS))){
+        for (int i = 0; i < epic.getSubtaskId().size(); i++) {
+            if (((subtasks.get(epic.getSubtaskId().get(i)).status == Status.IN_PROGRESS))) {
                 epic.setStatus(Status.IN_PROGRESS);
             }
-            if ((subtasks.get(epic.subtaskId.get(i)).status==Status.DONE)) {
+            if ((subtasks.get(epic.getSubtaskId().get(i)).status == Status.DONE)) {
                 check++;
             }
         }
         if (check != 0 && epic.status != Status.NEW) {
             epic.setStatus(Status.IN_PROGRESS);
         }
-        if (check == epic.subtaskId.size()) {
+        if (check == epic.getSubtaskId().size()) {
             epic.setStatus(Status.DONE);
-
         }
+        if (epic.getSubtaskId().isEmpty()) {
+            epic.setStatus(Status.NEW);
         }
-
-
-
-
-
-
-
-
+    }
 
 
     public void deleteSubTask(Subtask subtask) {
-        int numberEpic = subtask.epicId;
-        if (subtasks.get(subtask.taskId) != null) {
-           epics.get(subtask.getEpicId()).getSubtaskId().remove(subtask.taskId);
-        }
-       /* if (epics.get(numberEpic) != null
-                && epics.get(numberEpic).status != Status.DONE
-                && !epics.get(numberEpic).subtaskId.isEmpty()) {
-            epics.get(numberEpic).setStatus(Status.NEW);
-            if (epics.get(numberEpic)==null){
-                epics.get(numberEpic).setStatus(Status.NEW);
-            }
-
-
-        }
-*/
+        epics.get(subtasks.get(subtask.taskId).getEpicId()).getSubtaskId().remove(new Integer(subtask.taskId));
+        subtasks.remove(subtask.getTaskId());
+        checkEpic(epics.get(subtask.getEpicId()));
     }
-
 
     public void deleteTask(Task task) {
         if (tasks.get(task.taskId) != null) {
@@ -195,22 +181,27 @@ public class Manager {
         }
     }
 
-    //закончился блок.надо добавить удаление определенных элементов - тасков, субтасков и эпиков.
-    /**
-     * Методы для каждого из типа задач(Задача/Эпик/Подзадача):
-     * -Получение списка всех задач. --->Done
-     * -Удаление всех задач.  ---> Done
-     * -Получение по идентификатору. --> Done
-     * -Создание. Сам объект должен передаваться в качестве параметра. -->Done
-     * -Обновление. Новая версия объекта с верным идентификатором передаются в виде параметра.
-     * -Удаление по идентификатору.
-     */
-
-    /**
-     * Дополнительные методы:
-     * -Получение списка всех подзадач определённого эпика.   --->Done
-     */
-
-
+    public void deleteById(int id) {
+       // for (int i = 1; i <= generatorId; i++) {
+            if (tasks.containsKey(id)) {
+                tasks.remove(id);
+            }
+            if (epics.containsKey(id)) {
+                epics.remove(id);
+            }
+            if (subtasks.containsKey(id)) {
+                epics.get(subtasks.get(id).getEpicId()).getSubtaskId().remove(new Integer(id));
+                int delId=subtasks.get(id).getEpicId();
+                subtasks.remove(id);
+                checkEpic(epics.get(delId));
+            }
+       // }
+    }
 }
+
+
+
+
+
+
 

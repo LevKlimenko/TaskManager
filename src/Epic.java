@@ -5,9 +5,9 @@ public class Epic extends Task {
     //String nameEpic;
     //String description;
     //Status status;
-    int epicId;
+    private int epicId;
     //int subtaskId;
-    ArrayList<Integer>subtaskId;
+    private ArrayList<Integer>subtaskId;
 
     public Epic(String nameEpic, String description, ArrayList<Integer>subtaskId) {
         this.name = nameEpic;

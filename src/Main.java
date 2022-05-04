@@ -7,7 +7,7 @@ public class Main {
         System.out.println("Поехали!");
         Manager manager = new Manager();
 
-       /* Task task1 = new Task("task1","desc1");
+        Task task1 = new Task("task1","desc1");
         Task task2 = new Task("task2","desc2");
         manager.addNewTask(task1);
         manager.addNewTask(task2);
@@ -18,7 +18,7 @@ public class Main {
         System.out.println("проверка по номеру");
         System.out.println(manager.tasks.get(1));
         manager.changeStatusTask(task1);
-        System.out.println(manager.tasks.get(1));*/
+        System.out.println(manager.tasks.get(1));
                 System.out.println("________________________________________");
         System.out.println("Работа с эпиком");
         Epic epic1= new Epic("Epic1", "DescEpic1",new ArrayList<>());
@@ -45,9 +45,14 @@ public class Main {
         Subtask subtask4=new Subtask("subtask4","subtaskDescr4", epic1.taskId);
         manager.addNewSubTask(subtask4, epic1.taskId);
         manager.printEpic(epic1);
-        manager.deleteSubTask(subtask1);
+        manager.deleteById(3);
+        System.out.println("____________ПРОВЕРКА____________________");
+        manager.printAll();
+        System.out.println("_____________________________________________");
+        manager.printById(4);
+        /*manager.deleteSubTask(subtask1);
         manager.deleteSubTask(subtask2);
-        manager.deleteSubTask(subtask4);
+        //manager.deleteSubTask(subtask4);
         manager.printEpic(epic1);
         System.out.println(epic1.subtaskId);
         Subtask subtask5=new Subtask("subtask5","subtaskDescr5", epic1.taskId);
@@ -56,8 +61,10 @@ public class Main {
         manager.printEpic(epic1);
         manager.changeStatusSubTask(subtask5);
         manager.printEpic(epic1);
-        manager.deleteSubTask(subtask5);
+        manager.changeStatusSubTask(subtask5);
         manager.printEpic(epic1);
+        manager.deleteSubTask(subtask5);
+        manager.printEpic(epic1);*/
         /*System.out.println(manager.tasks.get(1));
         System.out.println(epic1);
         System.out.println(subtask1);

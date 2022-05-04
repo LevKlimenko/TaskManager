@@ -1,9 +1,9 @@
 import java.util.Objects;
 
 public class Task {
-    String name;
-    String description;
-    int taskId;
+    protected String name;
+    protected String description;
+    protected int taskId;
     Status status;
 
     public Task(String name, String description) {
