@@ -4,7 +4,7 @@ public class Task {
     protected String name;
     protected String description;
     protected int taskId;
-    Status status;
+    protected Status status;
 
     public Task(String name, String description) {
         this.name = name;
@@ -12,9 +12,12 @@ public class Task {
         this.status = Status.NEW;
     }
 
+    public Task() {
+    }
+
     @Override
     public String toString() {
-        return  "Задача "+ taskId +":    '" + name + '\'' +
+        return "ID " + taskId + ": Задача:    '" + name + '\'' +
                 ", Описание='" + description + '\'' +
                 ", Статус=" + status
                 ;
@@ -36,8 +39,6 @@ public class Task {
         return Objects.hash(name, description, taskId, status);
     }
 
-    public Task() {
-    }
 
     public String getName() {
         return name;

@@ -1,9 +1,7 @@
 import java.util.Objects;
 
-public class Subtask extends Task{
-    //String name;
-    //String description;
-    //Status status;
+public class Subtask extends Task {
+
     private int epicId;
 
     public Subtask(String nameSubtask, String description, int epicId) {
@@ -29,9 +27,9 @@ public class Subtask extends Task{
 
     @Override
     public String toString() {
-        return"ID "+ taskId + ": Подзадача: '"  + name + '\'' +
+        return "ID " + taskId + ": Подзадача: '" + name + '\'' +
                 ", Описание='" + description + '\'' +
-                ", Статус=" + status+ "| Относится к ID Эпика->" + epicId;
+                ", Статус=" + status + "| Относится к ID Эпика->" + epicId;
 
     }
 

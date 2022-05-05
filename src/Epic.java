@@ -2,20 +2,15 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
-    //String nameEpic;
-    //String description;
-    //Status status;
-    private int epicId;
-    //int subtaskId;
-    private ArrayList<Integer>subtaskId;
 
-    public Epic(String nameEpic, String description, ArrayList<Integer>subtaskId) {
+    private int epicId;
+    private ArrayList<Integer> subtaskId;
+
+    public Epic(String nameEpic, String description, ArrayList<Integer> subtaskId) {
         this.name = nameEpic;
         this.description = description;
-        //this.epicId = epicId;
-        //this.subtaskId = subtaskId;
         this.status = Status.NEW;
-        this.subtaskId=subtaskId;
+        this.subtaskId = subtaskId;
     }
 
     @Override
@@ -35,7 +30,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "ID "+ taskId + ": Эпик '" + name + '\'' +
+        return "ID " + taskId + ": Эпик       '" + name + '\'' +
                 ", Описание='" + description + '\'' +
                 ", Статус=" + status
                 ;
