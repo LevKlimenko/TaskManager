@@ -1,18 +1,23 @@
+package ru.mywork.taskmanager.model;
+
 import java.util.Objects;
 
 public class Task {
-    protected String name;
-    protected String description;
-    protected int taskId;
-    protected Status status;
+    private String name;
+    private String description;
+    private int taskId;
+    private Status status;
 
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
-        this.status = Status.NEW;
-    }
+        status=Status.NEW;
 
-    public Task() {
+    }
+    public Task(String name, String description, Status status) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
     }
 
     @Override
