@@ -8,7 +8,6 @@ import ru.mywork.taskmanager.service.Manager;
 
 public class Main {
 
-
     public static void main(String[] args) {
         Manager manager = new Manager();
         System.out.println("Проверка работы :");
@@ -21,7 +20,6 @@ public class Main {
         task3.setId(task1.getId());
         manager.updateTask(task3);
         manager.printAll();
-
         System.out.println("________________________________________");
         System.out.println("Работа с эпиком");
         Epic epic1 = new Epic("Уборка", "Убраться в квартире");
@@ -62,6 +60,5 @@ public class Main {
         manager.clearEpic();
         manager.clearSubtask();
         System.out.println("\nСчетчик задач обнулен. Текущее значение: " + manager.getGeneratorId());//проверка обнуления счетчика
-
     }
 }

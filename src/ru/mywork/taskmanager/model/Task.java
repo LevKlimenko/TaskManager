@@ -11,9 +11,9 @@ public class Task {
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
-        status=Status.NEW;
-
+        status = Status.NEW;
     }
+
     public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
@@ -43,7 +43,6 @@ public class Task {
     public int hashCode() {
         return Objects.hash(name, description, id, status);
     }
-
 
     public String getName() {
         return name;

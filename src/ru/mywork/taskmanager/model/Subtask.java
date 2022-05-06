@@ -7,14 +7,14 @@ public class Subtask extends Task {
     private int epicId;
 
     public Subtask(String name, String description, int epicId) {
-        super(name,description);
-        this.epicId=epicId;
-        }
+        super(name, description);
+        this.epicId = epicId;
+    }
 
     public Subtask(String name, String description, int epicId, Status status) {
-        super(name,description,status);
-        this.epicId=epicId;
-        }
+        super(name, description, status);
+        this.epicId = epicId;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -35,9 +35,7 @@ public class Subtask extends Task {
         return "ID " + getId() + ": Подзадача: '" + getName() + '\'' +
                 ", Описание='" + getDescription() + '\'' +
                 ", Статус=" + getStatus() + "| Относится к ID Эпика->" + epicId;
-
     }
-
 
     public int getEpicId() {
         return epicId;

@@ -155,7 +155,6 @@ public class Manager {
         return new HashMap<>(tasks);
     }
 
-
     public Task getTaskById(int id) {
         return tasks.get(id);
     }
@@ -167,7 +166,6 @@ public class Manager {
     public Subtask getSubtaskById(int id) {
         return subtasks.get(id);
     }
-
 
     public void clearTask() {
         tasks.clear();
@@ -197,7 +195,6 @@ public class Manager {
         }
     }
 
-
     public void deleteTaskById(int id) {
         tasks.remove(id);
     }
@@ -219,12 +216,4 @@ public class Manager {
             updateStatusEpic(epics.get(delId));
         }
     }
-
 }
-
-
-
-
-
-
-
