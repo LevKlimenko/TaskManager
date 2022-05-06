@@ -32,7 +32,7 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "ID " + getTaskId() + ": Подзадача: '" + getName() + '\'' +
+        return "ID " + getId() + ": Подзадача: '" + getName() + '\'' +
                 ", Описание='" + getDescription() + '\'' +
                 ", Статус=" + getStatus() + "| Относится к ID Эпика->" + epicId;
 
