@@ -12,10 +12,6 @@ public class Epic extends Task {
         super(name, description);
     }
 
-    public Epic(String name, String description, Status status) {
-        super(name, description, status);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

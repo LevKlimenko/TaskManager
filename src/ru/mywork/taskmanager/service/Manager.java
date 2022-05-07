@@ -58,32 +58,33 @@ public class Manager {
 
     public void updateEpic(Epic epic) {
         if (epics.containsKey(epic.getId())) {
-            if (epic.getSubtaskId().isEmpty()) {
-                epic.setStatus(Status.NEW);
-            } else {
-                updateStatusEpic(epic);
-            }
+            updateStatusEpic(epic);
             epics.put(epic.getId(), epic);
         }
     }
 
     private void updateStatusEpic(Epic epic) {
         int checkDone = 0;
-        int checkProgress = 0;
+        int checkNew = 0;
         for (Integer subId : epic.getSubtaskId()) {
-            if (((subtasks.get(subId).getStatus() == Status.IN_PROGRESS))) {
-                checkProgress++;
-            }
-            if ((subtasks.get(subId)).getStatus() == Status.DONE) {
+            if (epic.getSubtaskId().isEmpty()) {
+                epic.setStatus(Status.NEW);
+                return;
+            } else if (((subtasks.get(subId).getStatus() == Status.NEW))) {
+                checkNew++;
+            } else if ((subtasks.get(subId)).getStatus() == Status.DONE) {
                 checkDone++;
+            } else {
+                epic.setStatus(Status.IN_PROGRESS);
+                return;
             }
         }
-        if (checkDone == epic.getSubtaskId().size()) {
-            epic.setStatus(Status.DONE);
-        } else if (checkProgress > 0 || (checkDone > 0 && checkDone != epic.getSubtaskId().size())) {
-            epic.setStatus(Status.IN_PROGRESS);
-        } else {
+        if (checkNew == epic.getSubtaskId().size()) {
             epic.setStatus(Status.NEW);
+        } else if (checkDone == epic.getSubtaskId().size()) {
+            epic.setStatus(Status.DONE);
+        } else {
+            epic.setStatus(Status.IN_PROGRESS);
         }
     }
 
@@ -122,9 +123,11 @@ public class Manager {
     public void printById(int id) {//для удобного чтения данных со строки.Геттеры ниже.Этот метод на будущие проверки
         if (tasks.containsKey(id)) {
             System.out.println(tasks.get(id));
+            return;
         }
         if (epics.containsKey(id)) {
             printEpic(epics.get(id));
+            return;
         }
         if (subtasks.containsKey(id)) {
             System.out.println(subtasks.get(id));
@@ -174,11 +177,9 @@ public class Manager {
 
     public void clearSubtask() {
         subtasks.clear();
-        for (int i = 1; i <= generatorId; i++) {
-            if (epics.containsKey(i)) {
-                epics.get(i).getSubtaskId().clear();
-                epics.get(i).setStatus(Status.NEW);
-            }
+        for (Epic values : epics.values()) {
+            values.getSubtaskId().clear();
+            updateStatusEpic(epics.get(values.getId()));
         }
         checkTaskAvailability();
     }
