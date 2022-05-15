@@ -4,12 +4,12 @@ import ru.mywork.taskmanager.model.Epic;
 import ru.mywork.taskmanager.model.Status;
 import ru.mywork.taskmanager.model.Subtask;
 import ru.mywork.taskmanager.model.Task;
-import ru.mywork.taskmanager.service.Manager;
+import ru.mywork.taskmanager.service.InMemoryTaskManager;
 
 public class Main {
 
     public static void main(String[] args) {
-        Manager manager = new Manager();
+        InMemoryTaskManager manager = new InMemoryTaskManager();
         System.out.println("Проверка работы :");
         Task task1 = new Task("Купить корм кошке", "Магазин Лапки");
         Task task2 = new Task("Пойти бегать", "5км");
@@ -45,6 +45,9 @@ public class Main {
         manager.printById(epic1.getId());
         //manager.clearSubtask();
         manager.getAllTask();
+        System.out.println("История просмотров");
+        manager.printHistory();
+        System.out.println("Конец истории просмотров");
         manager.printById(epic1.getId());
         System.out.println("Проверка смены эпика");
         Epic epic3 = new Epic("Уборка1", "Убраться в квартире");
@@ -52,10 +55,15 @@ public class Main {
         epic3.setSubtaskId(epic1.getSubtaskId());
         manager.updateEpic(epic3);
         manager.printById(3);
+        manager.printById(task1.getId());
+        System.out.println("История просмотров");
+        manager.printHistory();
+        System.out.println("Конец истории просмотров");
         Subtask subtask6 = new Subtask("Пропылесосить1", "Кухня и комната", epic3.getId(), Status.DONE);
         manager.addNewSubTask(subtask6);
         manager.updateEpic(epic3);
         manager.printById(3);
+        manager.deleteEpicById(epic2.getId());
         manager.clearTask();
         manager.clearEpic();
         manager.clearSubtask();
