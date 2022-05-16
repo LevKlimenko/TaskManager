@@ -260,8 +260,14 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
+    }
+
+    @Override
     public void printHistory() {//Сделал для удобства просмотра построчно
-        for (Task task : historyManager.getHistory()) {
+        for (Task task : getHistory()) {
             System.out.println(task);
         }
     }
