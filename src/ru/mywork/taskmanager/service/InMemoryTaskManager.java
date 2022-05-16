@@ -16,7 +16,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final List<Task> taskBrowsingHistory = new ArrayList<>();
-
+    HistoryManager historyManager=Managers.getDefaultHistory();
 
     private int generatorId = 0;
 
@@ -103,7 +103,8 @@ public class InMemoryTaskManager implements TaskManager {
             if (subtasks.get(epic.getSubtaskId().get(i)) != null) {
                 System.out.println(subtasks.get(epic.getSubtaskId().get(i)));
             }
-            addBrowsingHistory(subtasks.get(epic.getSubtaskId().get(i)));
+            historyManager.add(subtasks.get(epic.getSubtaskId().get(i)));
+            //addBrowsingHistory(subtasks.get(epic.getSubtaskId().get(i)));
         }
     }
 
@@ -124,11 +125,13 @@ public class InMemoryTaskManager implements TaskManager {
     public void printAll() { //Метод для удобной проверки данных.Геттеры ниже.Этот метод на будущие проверки
         for (int i = 0; i <= generatorId; i++) {
             if (tasks.containsKey(i)) {
-                addBrowsingHistory(tasks.get(i));
+                historyManager.add(tasks.get(i));
+                //addBrowsingHistory(tasks.get(i));
                 System.out.println(tasks.get(i));
             }
             if (epics.containsKey(i)) {
-                addBrowsingHistory(epics.get(i));
+                historyManager.add(epics.get(i));
+                //addBrowsingHistory(epics.get(i));
                 printEpic(epics.get(i));
             }
         }
@@ -137,17 +140,20 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void printById(int id) {//для удобного чтения данных со строки.Геттеры ниже.Этот метод на будущие проверки
         if (tasks.containsKey(id)) {
-            addBrowsingHistory(tasks.get(id));
+            historyManager.add(tasks.get(id));
+            //addBrowsingHistory(tasks.get(id));
             System.out.println(tasks.get(id));
             return;
         }
         if (epics.containsKey(id)) {
-            addBrowsingHistory(epics.get(id));
+            historyManager.add(epics.get(id));
+            //addBrowsingHistory(epics.get(id));
             printEpic(epics.get(id));
             return;
         }
         if (subtasks.containsKey(id)) {
-            addBrowsingHistory(subtasks.get(id));
+            historyManager.add(subtasks.get(id));
+            //addBrowsingHistory(subtasks.get(id));
             System.out.println(subtasks.get(id));
         }
     }
@@ -156,19 +162,22 @@ public class InMemoryTaskManager implements TaskManager {
     public void getAllTask() {
         if (!tasks.isEmpty()) {
             for (Task task : tasks.values()) {
-                addBrowsingHistory(tasks.get(task.getId()));
+                historyManager.add(tasks.get(task.getId()));
+               // addBrowsingHistory(tasks.get(task.getId()));
             }
             System.out.println(getTasks());
         }
         if (!epics.isEmpty()) {
             for (Epic epic : epics.values()) {
-                addBrowsingHistory(epics.get(epic.getId()));
+                historyManager.add(epics.get(epic.getId()));
+                //addBrowsingHistory(epics.get(epic.getId()));
             }
             System.out.println(getEpics());
         }
         if (!subtasks.isEmpty()) {
             for (Subtask subtask : subtasks.values()) {
-                addBrowsingHistory(subtasks.get(subtask.getId()));
+                historyManager.add(subtasks.get(subtask.getId()));
+                //addBrowsingHistory(subtasks.get(subtask.getId()));
             }
             System.out.println(getSubtasks());
         }
@@ -189,28 +198,33 @@ public class InMemoryTaskManager implements TaskManager {
         return new HashMap<>(tasks);
     }
 
-    private void addBrowsingHistory(Task task) {
+  /*  private void addBrowsingHistory(Task task) {
         if (taskBrowsingHistory.size() == 10) {
             taskBrowsingHistory.remove(0);
         }
         taskBrowsingHistory.add(task);
     }
 
+   */
+
     @Override
     public Task getTaskById(int id) {
-        addBrowsingHistory(tasks.get(id));
+        historyManager.add(tasks.get(id));
+        //addBrowsingHistory(tasks.get(id));
         return tasks.get(id);
     }
 
     @Override
     public Epic getEpicById(int id) {
-        addBrowsingHistory(epics.get(id));
+        historyManager.add(epics.get(id));
+       // addBrowsingHistory(epics.get(id));
         return epics.get(id);
     }
 
     @Override
     public Subtask getSubtaskById(int id) {
-        addBrowsingHistory(subtasks.get(id));
+        historyManager.add(subtasks.get(id));
+       // addBrowsingHistory(subtasks.get(id));
         return subtasks.get(id);
     }
 
@@ -276,7 +290,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public void printHistory() {//Сделал для удобства просмотра построчно
-        for (Task task : getHistory()) {
+        for (Task task : historyManager.getHistory()) {
             System.out.println(task);
         }
     }

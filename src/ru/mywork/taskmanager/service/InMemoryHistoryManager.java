@@ -5,7 +5,7 @@ import ru.mywork.taskmanager.model.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-class InMemoryHistoryManager implements HistoryManager {
+class InMemoryHistoryManager implements HistoryManager{
     private final List<Task> taskBrowsingHistory = new ArrayList<>();
 
     @Override
