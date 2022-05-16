@@ -275,8 +275,8 @@ public class InMemoryTaskManager implements TaskManager {
         return taskBrowsingHistory;
     }
 
-    public void printHistory() {
-        for (Task task : taskBrowsingHistory) {
+    public void printHistory() {//Сделал для удобства просмотра построчно
+        for (Task task : getHistory()) {
             System.out.println(task);
         }
     }

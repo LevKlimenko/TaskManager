@@ -1,24 +1,23 @@
 package ru.mywork.taskmanager.service;
 
 import ru.mywork.taskmanager.model.Task;
+
 import java.util.ArrayList;
 import java.util.List;
 
-class InMemoryHistoryManager<T extends Task> implements HistoryManager<T> {
-    private final List<T> taskBrowsingHistory = new ArrayList<>();
+class InMemoryHistoryManager implements HistoryManager {
+    private final List<Task> taskBrowsingHistory = new ArrayList<>();
 
     @Override
-    public void add(T task) {
+    public void add(Task task) {
         if (taskBrowsingHistory.size() == 10) {
             taskBrowsingHistory.remove(0);
         }
         taskBrowsingHistory.add(task);
     }
 
-
-
     @Override
-    public List<T> getHistory() {
+    public List<Task> getHistory() {
         return taskBrowsingHistory;
     }
 }

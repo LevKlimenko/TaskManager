@@ -1,13 +1,13 @@
 package ru.mywork.taskmanager.service;
 
-public abstract class Managers <T extends TaskManager> {
+public class Managers {
 
 
-    private static ru.mywork.taskmanager.service.InMemoryHistoryManager InMemoryHistoryManager;
+    public static TaskManager getDefault() {
+        return new InMemoryTaskManager();
+    }
 
-    public abstract TaskManager getDefault();
-
-    static InMemoryHistoryManager getDefaultHistory() {
-        return InMemoryHistoryManager;
+    public static HistoryManager getDefaultHistory() {
+        return new InMemoryHistoryManager();
     }
 }

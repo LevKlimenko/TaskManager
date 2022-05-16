@@ -4,13 +4,16 @@ import ru.mywork.taskmanager.model.Epic;
 import ru.mywork.taskmanager.model.Status;
 import ru.mywork.taskmanager.model.Subtask;
 import ru.mywork.taskmanager.model.Task;
+import ru.mywork.taskmanager.service.HistoryManager;
 import ru.mywork.taskmanager.service.InMemoryTaskManager;
+import ru.mywork.taskmanager.service.Managers;
+import ru.mywork.taskmanager.service.TaskManager;
 
 public class Main {
 
     public static void main(String[] args) {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
         System.out.println("Проверка работы :");
+        TaskManager manager = Managers.getDefault();
         Task task1 = new Task("Купить корм кошке", "Магазин Лапки");
         Task task2 = new Task("Пойти бегать", "5км");
         manager.addNewTask(task1);
