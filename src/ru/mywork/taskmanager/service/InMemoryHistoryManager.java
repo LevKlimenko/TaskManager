@@ -5,15 +5,18 @@ import ru.mywork.taskmanager.model.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-class InMemoryHistoryManager implements HistoryManager{
+class InMemoryHistoryManager implements HistoryManager {
+    private final int MAX_HISTORY_SIZE = 10;
     private final List<Task> taskBrowsingHistory = new ArrayList<>();
 
     @Override
     public void add(Task task) {
-        if (taskBrowsingHistory.size() == 10) {
-            taskBrowsingHistory.remove(0);
+        if (task != null) {
+            if (taskBrowsingHistory.size() == MAX_HISTORY_SIZE) {
+                taskBrowsingHistory.remove(0);
+            }
+            taskBrowsingHistory.add(task);
         }
-        taskBrowsingHistory.add(task);
     }
 
     @Override

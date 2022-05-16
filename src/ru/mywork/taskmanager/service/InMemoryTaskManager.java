@@ -16,8 +16,8 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final List<Task> taskBrowsingHistory = new ArrayList<>();
-    HistoryManager historyManager=Managers.getDefaultHistory();
-
+    private final int MAX_HISTORY_SIZE = 10;
+    private HistoryManager historyManager = Managers.getDefaultHistory();
     private int generatorId = 0;
 
     @Override
@@ -163,7 +163,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (!tasks.isEmpty()) {
             for (Task task : tasks.values()) {
                 historyManager.add(tasks.get(task.getId()));
-               // addBrowsingHistory(tasks.get(task.getId()));
+                // addBrowsingHistory(tasks.get(task.getId()));
             }
             System.out.println(getTasks());
         }
@@ -199,13 +199,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
   /*  private void addBrowsingHistory(Task task) {
-        if (taskBrowsingHistory.size() == 10) {
-            taskBrowsingHistory.remove(0);
+        if (task != null) {
+            if (taskBrowsingHistory.size() == MAX_HISTORY_SIZE) {
+                taskBrowsingHistory.remove(0);
+            }
+            taskBrowsingHistory.add(task);
         }
-        taskBrowsingHistory.add(task);
-    }
+    }*/
 
-   */
 
     @Override
     public Task getTaskById(int id) {
@@ -217,14 +218,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpicById(int id) {
         historyManager.add(epics.get(id));
-       // addBrowsingHistory(epics.get(id));
+        // addBrowsingHistory(epics.get(id));
         return epics.get(id);
     }
 
     @Override
     public Subtask getSubtaskById(int id) {
         historyManager.add(subtasks.get(id));
-       // addBrowsingHistory(subtasks.get(id));
+        // addBrowsingHistory(subtasks.get(id));
         return subtasks.get(id);
     }
 

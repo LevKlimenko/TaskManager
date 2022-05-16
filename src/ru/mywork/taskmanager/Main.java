@@ -48,6 +48,7 @@ public class Main {
         manager.printById(epic1.getId());
         //manager.clearSubtask();
         manager.getAllTask();
+        System.out.println(manager.getTaskById(2));
         System.out.println("История просмотров");
         manager.printHistory();
         System.out.println("Конец истории просмотров");
