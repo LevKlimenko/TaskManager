@@ -15,8 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final List<Task> taskBrowsingHistory = new ArrayList<>();
-    private final int MAX_HISTORY_SIZE = 10;
+
     private HistoryManager historyManager = Managers.getDefaultHistory();
     private int generatorId = 0;
 
@@ -104,7 +103,6 @@ public class InMemoryTaskManager implements TaskManager {
                 System.out.println(subtasks.get(epic.getSubtaskId().get(i)));
             }
             historyManager.add(subtasks.get(epic.getSubtaskId().get(i)));
-            //addBrowsingHistory(subtasks.get(epic.getSubtaskId().get(i)));
         }
     }
 
@@ -126,12 +124,10 @@ public class InMemoryTaskManager implements TaskManager {
         for (int i = 0; i <= generatorId; i++) {
             if (tasks.containsKey(i)) {
                 historyManager.add(tasks.get(i));
-                //addBrowsingHistory(tasks.get(i));
                 System.out.println(tasks.get(i));
             }
             if (epics.containsKey(i)) {
                 historyManager.add(epics.get(i));
-                //addBrowsingHistory(epics.get(i));
                 printEpic(epics.get(i));
             }
         }
@@ -141,19 +137,16 @@ public class InMemoryTaskManager implements TaskManager {
     public void printById(int id) {//для удобного чтения данных со строки.Геттеры ниже.Этот метод на будущие проверки
         if (tasks.containsKey(id)) {
             historyManager.add(tasks.get(id));
-            //addBrowsingHistory(tasks.get(id));
             System.out.println(tasks.get(id));
             return;
         }
         if (epics.containsKey(id)) {
             historyManager.add(epics.get(id));
-            //addBrowsingHistory(epics.get(id));
             printEpic(epics.get(id));
             return;
         }
         if (subtasks.containsKey(id)) {
             historyManager.add(subtasks.get(id));
-            //addBrowsingHistory(subtasks.get(id));
             System.out.println(subtasks.get(id));
         }
     }
@@ -163,21 +156,18 @@ public class InMemoryTaskManager implements TaskManager {
         if (!tasks.isEmpty()) {
             for (Task task : tasks.values()) {
                 historyManager.add(tasks.get(task.getId()));
-                // addBrowsingHistory(tasks.get(task.getId()));
             }
             System.out.println(getTasks());
         }
         if (!epics.isEmpty()) {
             for (Epic epic : epics.values()) {
                 historyManager.add(epics.get(epic.getId()));
-                //addBrowsingHistory(epics.get(epic.getId()));
             }
             System.out.println(getEpics());
         }
         if (!subtasks.isEmpty()) {
             for (Subtask subtask : subtasks.values()) {
                 historyManager.add(subtasks.get(subtask.getId()));
-                //addBrowsingHistory(subtasks.get(subtask.getId()));
             }
             System.out.println(getSubtasks());
         }
@@ -198,34 +188,21 @@ public class InMemoryTaskManager implements TaskManager {
         return new HashMap<>(tasks);
     }
 
-  /*  private void addBrowsingHistory(Task task) {
-        if (task != null) {
-            if (taskBrowsingHistory.size() == MAX_HISTORY_SIZE) {
-                taskBrowsingHistory.remove(0);
-            }
-            taskBrowsingHistory.add(task);
-        }
-    }*/
-
-
     @Override
     public Task getTaskById(int id) {
         historyManager.add(tasks.get(id));
-        //addBrowsingHistory(tasks.get(id));
         return tasks.get(id);
     }
 
     @Override
     public Epic getEpicById(int id) {
         historyManager.add(epics.get(id));
-        // addBrowsingHistory(epics.get(id));
         return epics.get(id);
     }
 
     @Override
     public Subtask getSubtaskById(int id) {
         historyManager.add(subtasks.get(id));
-        // addBrowsingHistory(subtasks.get(id));
         return subtasks.get(id);
     }
 
@@ -280,14 +257,8 @@ public class InMemoryTaskManager implements TaskManager {
             epics.get(subtasks.get(id).getEpicId()).getSubtaskId().remove(Integer.valueOf(id));
             int delId = subtasks.get(id).getEpicId();
             subtasks.remove(id);
-
             updateStatusEpic(epics.get(delId));
         }
-    }
-
-    @Override
-    public List<Task> getHistory() {
-        return taskBrowsingHistory;
     }
 
     public void printHistory() {//Сделал для удобства просмотра построчно
