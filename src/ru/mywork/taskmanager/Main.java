@@ -63,6 +63,7 @@ public class Main {
         System.out.println("История просмотров");
         manager.printHistory();
         System.out.println("Конец истории просмотров");
+        System.out.println("Проверяем вывод задания, в случае его отсутствия: "+ manager.getTaskById(2));
         Subtask subtask6 = new Subtask("Пропылесосить1", "Кухня и комната", epic3.getId(), Status.DONE);
         manager.addNewSubTask(subtask6);
         manager.updateEpic(epic3);
