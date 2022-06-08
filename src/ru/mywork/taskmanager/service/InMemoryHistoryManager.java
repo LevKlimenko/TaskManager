@@ -4,104 +4,115 @@ import ru.mywork.taskmanager.model.Task;
 
 import java.util.*;
 
-import static java.util.Collections.addAll;
-
 class InMemoryHistoryManager implements HistoryManager {
     private final Map<Integer, Node> customLinkedList = new HashMap<>();
-    public Node<Task> head;
-    public Node<Task> tail;
-    private int id = 0;
+    public Node first;
+    public Node last;
+    private List<Task> historyTask = new ArrayList<>();
+    private int size = 0;
 
     @Override
     public void add(Task task) {//eсли задача есть - удаляем ее и добавляем в конец двусявязного списка
-    if (customLinkedList.containsValue(linkLast(task))){
-        customLinkedList.v;
-    }
-        customLinkedList.put(id+1,linkLast(task));
+        remove(task.getId());
+        linkLast(task);
     }
 
     @Override
     public void remove(int id) {
-
-    }
-//}
-
-//class CustomLinkedList<T> {
-
-    @Override
-    public Map<Integer, Task> getHistory() {
-        return new HashMap(customLinkedList);
+        if (customLinkedList.containsKey(id)) {
+            removeNode(customLinkedList.get(id));
+            customLinkedList.remove(id);
+        }
     }
 
-    public Node linkLast(Task task) {
-        final Node<Task> oldTail = tail;
-        final Node<Task> newNode = new Node<>(oldTail, task, null);
-        if (oldTail != null)
-            oldTail.next = newNode;
-        else head = newNode;
-        id++;
-        return newNode;
-        //Добавляем задачу в конец списка
+    public List<Task> getHistory() {//собираем задачи из списка в обычный ArrayList
+        List<Task> history = new LinkedList<>();
+        if (customLinkedList.isEmpty()) {
+            System.out.println("Итория пуста");
+        } else {
+            //System.out.println(customLinkedList);
+            for (Node node : customLinkedList.values()) {
+                history.add(node.data);
+            }
+        }
+        return history;
     }
 
-    public void getTasks(List customLinkedList, List standartArrayList) {
-        standartArrayList.addAll(customLinkedList);
+    public void linkLast(Task task) {
+        if (size == 0) {
+            first = new Node(null, task, null);
+            last = first;
+        } else {
+            final Node previousNode = last;
+            final Node newNode = new Node(previousNode, task, null);
+            if (previousNode != null)
+                previousNode.next = newNode;
+            //Добавляем задачу в конец списка
+            customLinkedList.put(task.getId(), newNode);
+        }
+        size++;
 
-
-        //Собирать все задачи из списка в обычный ArrayList
     }
+
+    public void getTasks() {
+        for (Task task : getHistory()) {
+            historyTask.add(task);
+        }
+
+    }
+
 
     public void removeNode(Node node) {
+        if (node == null) {
+            for (Node x = first; x != null; x = x.next) {
+                if (x.data == null) {
+                    unlink(x);
+                    return;
+                }
+            }
+        } else {
+            for (Node x = first; x != null; x = x.next) {
+                if (node.equals(x.data)) {
+                    unlink(x);
+                    return;
+                }
+            }
+        }
+    }
 
-        /**  public E remove(int index) {
-         checkElementIndex(index);
-         return unlink(node(index));
-         }
-         private void checkElementIndex(int index) {
-         if (!isElementIndex(index))
-         throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+    public void unlink(Node node) {
+        // assert x != null;
+        final Task element = node.data;
+        final Node next = node.next;
+        final Node prev = node.prev;
 
-         private boolean isPositionIndex(int index) {
-         return index >= 0 && index <= size;
-         }
+        if (prev == null) {
+            first = next;
+        } else {
+            prev.next = next;
+            node.prev = null;
+        }
 
-         E unlink(Node<E> x) {
-         // assert x != null;
-         final E element = x.item;
-         final LinkedList.Node<E> next = x.next;
-         final LinkedList.Node<E> prev = x.prev;
+        if (next == null) {
+            last = prev;
+        } else {
+            next.prev = prev;
+            node.next = null;
+        }
 
-         if (prev == null) {
-         first = next;
-         } else {
-         prev.next = next;
-         x.prev = null;
-         }
-
-         if (next == null) {
-         last = prev;
-         } else {
-         next.prev = prev;
-         x.next = null;
-         }
-
-         x.item = null;
-         size--;
-         modCount++;
-         return element;
-         }
-         //удалить узел */
+        node.data = null;
+        size--;
     }
 
 
 }
 
-class Node<T> {
-    public T data;
-    public Node<T> next;
-    public Node<T> prev;
+class Node {
+    public Task data;
+    public Node next;
+    public Node prev;
 
-    public Node(Node<T> prev, T data, Node<T> next) {
+    public Node(Node prev, Task data, Node next) {
         this.data = data;
         this.next = next;
         this.prev = prev;

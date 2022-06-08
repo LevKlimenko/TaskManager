@@ -14,15 +14,23 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Проверка работы :");
         TaskManager manager = Managers.getDefault();
+       // manager.getHistory();
         Task task1 = new Task("Купить корм кошке", "Магазин Лапки");
         Task task2 = new Task("Пойти бегать", "5км");
         manager.addNewTask(task1);
         manager.addNewTask(task2);
         manager.printAll();
+        System.out.println("work");
+        System.out.println(manager.getHistory());
+        System.out.println("end work");
+        manager.getTaskById(task1.getId());
+        manager.getHistory();
+        //manager.deleteTaskById(task1.getId());
         Task task3 = new Task("Купить корм кошке", "Магазин Лапки", Status.DONE);
+
         task3.setId(task1.getId());
         manager.updateTask(task3);
-        manager.printAll();
+
         System.out.println("________________________________________");
         System.out.println("Работа с эпиком");
         Epic epic1 = new Epic("Уборка", "Убраться в квартире");
@@ -32,8 +40,16 @@ public class Main {
         Subtask subtask2 = new Subtask("Мусор", "Выкинуть мусор", epic1.getId(), Status.NEW);
         manager.addNewSubTask(subtask2);
         manager.printById(epic1.getId());
+        System.out.println("work");
+        System.out.println(manager.getHistory());
+        System.out.println("end work");
+        manager.getTaskById(task1.getId());
+        System.out.println("work");
+        System.out.println(manager.getHistory());
+        System.out.println("end work");
         Epic epic2 = new Epic("Сделать скамейку", "Длина 150см");
         manager.addNewEpic(epic2);
+
         Subtask subtask3 = new Subtask("Порезать доски", "Длина +-1мм", epic1.getId(), Status.DONE);
         manager.addNewSubTask(subtask3);
         manager.printById(epic1.getId());
@@ -73,5 +89,5 @@ public class Main {
         manager.clearEpic();
         manager.clearSubtask();
         System.out.println("\nСчетчик задач обнулен. Текущее значение: " + manager.getGeneratorId());//проверка обнуления счетчика
-    }
+   }
 }

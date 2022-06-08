@@ -11,5 +11,5 @@ public interface HistoryManager {
     void add(Task task);
     void remove(int id);
 
-    Map<Integer,Task> getHistory();
-}
+    List<Task> getHistory();
+    }
