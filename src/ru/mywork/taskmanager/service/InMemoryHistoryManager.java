@@ -46,7 +46,7 @@ class InMemoryHistoryManager implements HistoryManager {
             last.next = node;
         }
         last = node;
-        customLinkedList.put(task.getId(), last);
+        customLinkedList.put(task.getId(), node);
         size++;
     }
 
