@@ -5,14 +5,13 @@ import ru.mywork.taskmanager.model.Task;
 import java.util.*;
 
 class InMemoryHistoryManager implements HistoryManager {
-    private final Map<Integer, Node> customLinkedList = new HashMap<>();
+    private final Map<Integer, Node> customLinkedList = new LinkedHashMap<>();
     public Node first;
     public Node last;
-    private List<Task> historyTask = new ArrayList<>();
     private int size = 0;
 
     @Override
-    public void add(Task task) {//eсли задача есть - удаляем ее и добавляем в конец двусявязного списка
+    public void add(Task task) {
         remove(task.getId());
         linkLast(task);
     }
@@ -23,14 +22,14 @@ class InMemoryHistoryManager implements HistoryManager {
             removeNode(customLinkedList.get(id));
             customLinkedList.remove(id);
         }
+
     }
 
-    public List<Task> getHistory() {//собираем задачи из списка в обычный ArrayList
-        List<Task> history = new LinkedList<>();
+    public List<Task> getHistory() {
+        List<Task> history = new ArrayList<>();
         if (customLinkedList.isEmpty()) {
-            System.out.println("Итория пуста");
+            System.out.println("История пуста");
         } else {
-            //System.out.println(customLinkedList);
             for (Node node : customLinkedList.values()) {
                 history.add(node.data);
             }
@@ -42,25 +41,16 @@ class InMemoryHistoryManager implements HistoryManager {
         if (size == 0) {
             first = new Node(null, task, null);
             last = first;
+            customLinkedList.put(task.getId(), first);
         } else {
             final Node previousNode = last;
             final Node newNode = new Node(previousNode, task, null);
             if (previousNode != null)
                 previousNode.next = newNode;
-            //Добавляем задачу в конец списка
             customLinkedList.put(task.getId(), newNode);
         }
         size++;
-
     }
-
-    public void getTasks() {
-        for (Task task : getHistory()) {
-            historyTask.add(task);
-        }
-
-    }
-
 
     public void removeNode(Node node) {
         if (node == null) {
@@ -72,7 +62,7 @@ class InMemoryHistoryManager implements HistoryManager {
             }
         } else {
             for (Node x = first; x != null; x = x.next) {
-                if (node.equals(x.data)) {
+                if (node.equals(x)) {
                     unlink(x);
                     return;
                 }
@@ -81,7 +71,6 @@ class InMemoryHistoryManager implements HistoryManager {
     }
 
     public void unlink(Node node) {
-        // assert x != null;
         final Task element = node.data;
         final Node next = node.next;
         final Node prev = node.prev;
@@ -92,19 +81,15 @@ class InMemoryHistoryManager implements HistoryManager {
             prev.next = next;
             node.prev = null;
         }
-
         if (next == null) {
             last = prev;
         } else {
             next.prev = prev;
             node.next = null;
         }
-
         node.data = null;
         size--;
     }
-
-
 }
 
 class Node {
