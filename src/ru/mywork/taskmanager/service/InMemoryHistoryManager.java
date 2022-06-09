@@ -6,24 +6,10 @@ import java.util.*;
 
 class InMemoryHistoryManager implements HistoryManager {
 
-    private static class Node {
-        public Task data;
-        public Node next;
-        public Node prev;
-
-        public Node(Node prev, Task data, Node next) {
-            this.data = data;
-            this.next = next;
-            this.prev = prev;
-        }
-    }
-
     private final Map<Integer, Node> customLinkedList = new HashMap<>();
     private Node first;
     private Node last;
     private int size = 0;
-
-
 
     @Override
     public void add(Task task) {
@@ -35,7 +21,7 @@ class InMemoryHistoryManager implements HistoryManager {
     public void remove(int id) {
         if (customLinkedList.containsKey(id)) {
             removeNode(customLinkedList.get(id));
-            }
+        }
     }
 
     public List<Task> getHistory() {
@@ -44,22 +30,22 @@ class InMemoryHistoryManager implements HistoryManager {
             System.out.println("История пуста");
         } else {
             Node node = first;
-            while (node!=null){
+            while (node != null) {
                 history.add(node.data);
-                node=node.next;
+                node = node.next;
             }
         }
         return history;
     }
 
     private void linkLast(Task task) {
-        Node node = new Node(last,task,null);
-        if (last==null){
-            first=node;
+        Node node = new Node(last, task, null);
+        if (last == null) {
+            first = node;
         } else {
             last.next = node;
         }
-        last=node;
+        last = node;
         customLinkedList.put(task.getId(), last);
         size++;
     }
@@ -84,6 +70,18 @@ class InMemoryHistoryManager implements HistoryManager {
         node.data = null;
         customLinkedList.remove(element.getId());
 
+    }
+
+    private static class Node {
+        public Task data;
+        public Node next;
+        public Node prev;
+
+        public Node(Node prev, Task data, Node next) {
+            this.data = data;
+            this.next = next;
+            this.prev = prev;
+        }
     }
 
 }

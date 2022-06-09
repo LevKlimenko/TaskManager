@@ -291,7 +291,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void printHistory() {//Сделал для удобства просмотра построчно
-        System.out.println(ANSI_RED + "История просмотров:"+ ANSI_RESET);
+        System.out.println(ANSI_RED + "История просмотров:" + ANSI_RESET);
         for (int i = 0; i < getHistory().size(); i++) {
             System.out.println(getHistory().get(i));
         }
