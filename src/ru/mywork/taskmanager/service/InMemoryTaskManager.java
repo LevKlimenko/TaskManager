@@ -191,19 +191,25 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskById(int id) {
-        historyManager.add(tasks.get(id));
+        if (tasks.containsKey(id)) {
+            historyManager.add(tasks.get(id));
+        }
         return tasks.get(id);
     }
 
     @Override
     public Epic getEpicById(int id) {
-        historyManager.add(epics.get(id));
+        if (epics.containsKey(id)) {
+            historyManager.add(epics.get(id));
+        }
         return epics.get(id);
     }
 
     @Override
     public Subtask getSubtaskById(int id) {
-        historyManager.add(subtasks.get(id));
+        if (subtasks.containsKey(id)) {
+            historyManager.add(subtasks.get(id));
+        }
         return subtasks.get(id);
     }
 
@@ -285,7 +291,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void printHistory() {//Сделал для удобства просмотра построчно
-        System.out.println(ANSI_RED + "История просмотров:" + ANSI_RESET);
+        System.out.println(ANSI_RED + "История просмотров:"+ ANSI_RESET);
         for (int i = 0; i < getHistory().size(); i++) {
             System.out.println(getHistory().get(i));
         }

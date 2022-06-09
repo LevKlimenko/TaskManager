@@ -5,10 +5,25 @@ import ru.mywork.taskmanager.model.Task;
 import java.util.*;
 
 class InMemoryHistoryManager implements HistoryManager {
-    private final Map<Integer, Node> customLinkedList = new LinkedHashMap<>();
-    public Node first;
-    public Node last;
+
+    private static class Node {
+        public Task data;
+        public Node next;
+        public Node prev;
+
+        public Node(Node prev, Task data, Node next) {
+            this.data = data;
+            this.next = next;
+            this.prev = prev;
+        }
+    }
+
+    private final Map<Integer, Node> customLinkedList = new HashMap<>();
+    private Node first;
+    private Node last;
     private int size = 0;
+
+
 
     @Override
     public void add(Task task) {
@@ -20,9 +35,7 @@ class InMemoryHistoryManager implements HistoryManager {
     public void remove(int id) {
         if (customLinkedList.containsKey(id)) {
             removeNode(customLinkedList.get(id));
-            customLinkedList.remove(id);
-        }
-
+            }
     }
 
     public List<Task> getHistory() {
@@ -30,47 +43,28 @@ class InMemoryHistoryManager implements HistoryManager {
         if (customLinkedList.isEmpty()) {
             System.out.println("История пуста");
         } else {
-            for (Node node : customLinkedList.values()) {
+            Node node = first;
+            while (node!=null){
                 history.add(node.data);
+                node=node.next;
             }
         }
         return history;
     }
 
-    public void linkLast(Task task) {
-        if (size == 0) {
-            first = new Node(null, task, null);
-            last = first;
-            customLinkedList.put(task.getId(), first);
+    private void linkLast(Task task) {
+        Node node = new Node(last,task,null);
+        if (last==null){
+            first=node;
         } else {
-            final Node previousNode = last;
-            final Node newNode = new Node(previousNode, task, null);
-            if (previousNode != null)
-                previousNode.next = newNode;
-            customLinkedList.put(task.getId(), newNode);
+            last.next = node;
         }
+        last=node;
+        customLinkedList.put(task.getId(), last);
         size++;
     }
 
-    public void removeNode(Node node) {
-        if (node == null) {
-            for (Node x = first; x != null; x = x.next) {
-                if (x.data == null) {
-                    unlink(x);
-                    return;
-                }
-            }
-        } else {
-            for (Node x = first; x != null; x = x.next) {
-                if (node.equals(x)) {
-                    unlink(x);
-                    return;
-                }
-            }
-        }
-    }
-
-    public void unlink(Node node) {
+    private void removeNode(Node node) {//предыдущая реализация этого метода была взята из LinkedList
         final Task element = node.data;
         final Node next = node.next;
         final Node prev = node.prev;
@@ -88,22 +82,13 @@ class InMemoryHistoryManager implements HistoryManager {
             node.next = null;
         }
         node.data = null;
-        size--;
-    }
-}
+        customLinkedList.remove(element.getId());
 
-class Node {
-    public Task data;
-    public Node next;
-    public Node prev;
-
-    public Node(Node prev, Task data, Node next) {
-        this.data = data;
-        this.next = next;
-        this.prev = prev;
     }
 
 }
+
+
 
 
 

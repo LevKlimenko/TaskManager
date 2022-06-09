@@ -37,7 +37,7 @@ public class Main {
         manager.addNewSubTask(subtask2);
         manager.printById(epic1.getId());
         manager.printHistory();
-        manager.getTaskById(task2.getId());
+        System.out.println(manager.getTaskById(task2.getId()));
         manager.printHistory();
         Epic epic2 = new Epic("Сделать скамейку", "Длина 150см");
         manager.addNewEpic(epic2);
