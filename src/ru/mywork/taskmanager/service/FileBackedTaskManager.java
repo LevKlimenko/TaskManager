@@ -13,6 +13,16 @@ import java.util.HashMap;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
+
+    public FileBackedTaskManager() {
+
+    }
+
+    static FileBackedTaskManager loadFromFile(File file){
+        FileBackedTaskManager load = new FileBackedTaskManager();
+        load.fromString(String.valueOf(file));
+        return load;
+    }
     ArrayList<Integer> history = new ArrayList<>();
     private String fileName;
 
@@ -89,11 +99,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 addNewEpic(new Epic(task[2], task[3]));
                 break;
             case "SUBTASK":
-                //if (getEpics().containsKey(Integer.parseInt(task[5]))) {
                 addNewSubTask(new Subtask(task[2], task[3], Integer.parseInt(task[5]), Status.valueOf(task[4])));
                 break;
             }
-
        }
 
     public List<Integer> loadFromFile(Path path) throws NullPointerException {
@@ -104,15 +112,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             while (!(line = br.readLine()).equals("")) {
                 String[] task = line.split(cvsSplitBy);
                 history.add(Integer.parseInt(task[0]));
-                fromString(line);  //<----------вот тут ошибка, он добавляет объекты, а потом в след.раз считывает
+                fromString(line);
             }
-        } catch (IOException e) {
-            System.out.println("Ошибка чтения данных");
+        } catch (IOException ManagerSaveException) {
+            throw ManagerSaveException("Ошибка чтения данных");
         }
         return history;
     }
 
-    public void loadDataFromFile(String fileName) throws IOException {
+    private NullPointerException ManagerSaveException(String ошибка_чтения_данных) {
+        return null;
+    }
+
+
+    public static void loadDataFromFile(String fileName) throws IOException {
         FileReader fr = new FileReader(fileName);
         BufferedReader br = new BufferedReader(fr);
         while (br.ready()) {

@@ -30,8 +30,15 @@ public class Managers {
 
     public static void main(String[] args) throws IOException {
         FileBackedTaskManager managers = new FileBackedTaskManager("tasks.csv");
-        managers.loadDataFromFile("tasks.csv");
+        FileBackedTaskManager.loadDataFromFile("tasks.csv");
        System.out.println(managers.loadFromFile(Paths.get("tasks.csv")));
+       managers.printById(1);
+       System.out.println(managers.getEpicById(2));
+       managers.printHistory();
+
+
+
+
              }
 
 
