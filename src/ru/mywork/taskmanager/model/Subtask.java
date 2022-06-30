@@ -5,16 +5,17 @@ import java.util.Objects;
 public class Subtask extends Task {
 
     private int epicId;
-    protected TypeTask typeTask = TypeTask.SUBTASK;
+    protected TypeTask typeTask;
 
     public Subtask(String name, String description, int epicId) {
         super(name, description);
-        this.typeTask=TypeTask.EPIC;
+        this.typeTask=TypeTask.SUBTASK;
         this.epicId = epicId;
     }
 
     public Subtask(String name, String description, int epicId, Status status) {
         super(name, description, status);
+        this.typeTask=TypeTask.SUBTASK;
         this.epicId = epicId;
     }
 

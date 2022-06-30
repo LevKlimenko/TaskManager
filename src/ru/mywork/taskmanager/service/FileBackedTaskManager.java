@@ -58,16 +58,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
     public void save() {
-        try (FileWriter fw = new FileWriter("tasks.csv")) {
+        try (FileWriter fw = new FileWriter("tasks.csv", false)) {
             fw.write("id,type,name,description,status,epic/[subtasksId]\n");
             for (Task task : getTasks().values()) {
                 fw.write(task.toStringInFile() + "\n");
             }
-            for (Subtask subtask : getSubtasks().values()) {
-                fw.write(subtask.toStringInFile() + "\n");
-            }
             for (Epic epic : getEpics().values()) {
                 fw.write(epic.toStringInFile() + "\n");
+            }
+            for (Subtask subtask : getSubtasks().values()) {
+                fw.write(subtask.toStringInFile() + "\n");
             }
             fw.write("\n");
             if (getHistory().size() != 0) {
@@ -89,14 +89,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 addNewEpic(new Epic(task[2], task[3]));
                 break;
             case "SUBTASK":
-                if (getEpics().containsKey(Integer.parseInt(task[5]))) {
+                //if (getEpics().containsKey(Integer.parseInt(task[5]))) {
                 addNewSubTask(new Subtask(task[2], task[3], Integer.parseInt(task[5]), Status.valueOf(task[4])));
                 break;
             }
-        }
+
        }
 
-    public List<Integer> loadFromFile(Path path) {
+    public List<Integer> loadFromFile(Path path) throws NullPointerException {
         String line = " ";
         String cvsSplitBy = ",";
         try (BufferedReader br = new BufferedReader(new FileReader(String.valueOf(path)))) {
@@ -104,7 +104,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             while (!(line = br.readLine()).equals("")) {
                 String[] task = line.split(cvsSplitBy);
                 history.add(Integer.parseInt(task[0]));
-                fromString(line);
+                fromString(line);  //<----------вот тут ошибка, он добавляет объекты, а потом в след.раз считывает
             }
         } catch (IOException e) {
             System.out.println("Ошибка чтения данных");
