@@ -4,18 +4,18 @@ import ru.mywork.taskmanager.model.Epic;
 import ru.mywork.taskmanager.model.Status;
 import ru.mywork.taskmanager.model.Subtask;
 import ru.mywork.taskmanager.model.Task;
-import ru.mywork.taskmanager.service.HistoryManager;
-import ru.mywork.taskmanager.service.InMemoryTaskManager;
-import ru.mywork.taskmanager.service.Managers;
-import ru.mywork.taskmanager.service.TaskManager;
+import ru.mywork.taskmanager.service.*;
+
+import java.io.IOException;
+import java.nio.file.Paths;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         System.out.println("Проверка работы :");
-        TaskManager manager = Managers.getDefault();
-        manager.printHistory();
-        // manager.getHistory();
+        FileBackedTaskManager manager = new FileBackedTaskManager("tasks.csv");
+        //manager.loadDataFromFile("tasks.csv");
+        //System.out.println(manager.loadFromFile(Paths.get("tasks.csv")));
         Task task1 = new Task("Купить корм кошке", "Магазин Лапки");
         Task task2 = new Task("Пойти бегать", "5км");
         manager.addNewTask(task1);
@@ -69,7 +69,8 @@ public class Main {
         System.out.println("Проверяем вывод задания, в случае его отсутствия: " + manager.getTaskById(2));
         Subtask subtask6 = new Subtask("Пропылесосить1", "Кухня и комната", epic3.getId(), Status.DONE);
         manager.addNewSubTask(subtask6);
-        manager.updateEpic(epic3);
+       manager.printById(8);
+       /* manager.updateEpic(epic3);
         manager.printById(3);
         manager.clearSubtask();
         manager.printHistory();
@@ -77,8 +78,8 @@ public class Main {
         manager.printHistory();
         manager.clearTask();
         manager.clearEpic();
-        manager.clearSubtask();
+        manager.clearSubtask();*/
         manager.printHistory();
-        System.out.println("\nСчетчик задач обнулен. Текущее значение: " + manager.getGeneratorId());//проверка обнуления счетчика
+        System.out.println("\nСчетчик ID задач. Текущее значение: " + manager.getGeneratorId());//проверка обнуления счетчика
     }
 }

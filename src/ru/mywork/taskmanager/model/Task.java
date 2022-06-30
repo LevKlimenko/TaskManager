@@ -3,18 +3,24 @@ package ru.mywork.taskmanager.model;
 import java.util.Objects;
 
 public class Task {
-    private String name;
-    private String description;
-    private int id;
-    private Status status;
+
+
+    protected TypeTask typeTask;
+    protected String name;
+    protected String description;
+    protected int id;
+    protected Status status;
+
 
     public Task(String name, String description) {
+        this.typeTask = TypeTask.TASK;
         this.name = name;
         this.description = description;
         status = Status.NEW;
     }
 
     public Task(String name, String description, Status status) {
+        this.typeTask = TypeTask.TASK;
         this.name = name;
         this.description = description;
         this.status = status;
@@ -22,10 +28,27 @@ public class Task {
 
     @Override
     public String toString() {
-        return "ID " + id + ": Задача:    '" + name + '\'' +
-                ", Описание='" + description + '\'' +
-                ", Статус=" + status
-                ;
+        final StringBuilder sb = new StringBuilder("Task{");
+        sb.append("id=").append(getId());
+        sb.append(", type='").append(getTypeTask()).append('\'');
+        sb.append(", name='").append(getName()).append('\'');
+        sb.append(", description='").append(getDescription()).append('\'');
+        sb.append(", status=").append(getStatus());
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public String toStringInFile() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(getId());
+        sb.append(",").append(getTypeTask());
+        sb.append(",").append(getName());
+        sb.append(",").append(getDescription());
+        sb.append(",").append(getStatus());
+        return sb.toString();
+    }
+    public TypeTask getTypeTask() {
+        return typeTask;
     }
 
     @Override
