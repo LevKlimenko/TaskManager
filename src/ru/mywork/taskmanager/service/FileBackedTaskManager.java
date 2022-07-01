@@ -14,18 +14,17 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
 
-    public FileBackedTaskManager() {
-
-    }
-
-    static FileBackedTaskManager loadFromFile(File file){
-        FileBackedTaskManager load = new FileBackedTaskManager();
-        load.fromString(String.valueOf(file));
-        return load;
-    }
     ArrayList<Integer> history = new ArrayList<>();
     private String fileName;
 
+
+    public String getHistory1() {
+        return historyToString(historyManager); ///верное решение?
+    }
+
+    public FileBackedTaskManager() {
+
+    }
     public FileBackedTaskManager(String fileName) {
         this.fileName = fileName;
         if (!Files.exists(Paths.get(fileName))) {
@@ -38,7 +37,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         }
     }
 
-    static String historyToString(HistoryManager manager) {
+    static FileBackedTaskManager loadFromFile(File file) {
+        FileBackedTaskManager load = new FileBackedTaskManager();
+        try {
+            load.loadDataFromFile(String.valueOf(file));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return load;
+    }
+
+    static String historyToString(HistoryManager manager) {  //это работает.
         List<Task> history = new ArrayList<>(manager.getHistory());
         StringBuilder sb = new StringBuilder();
         if (history.isEmpty()) {
@@ -49,12 +58,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             sb.append(task.getId());
             if (manager.getHistory().indexOf(task) < manager.getHistory().size() - 1) {
                 sb.append(",");
-            }
-        }
+                            }
+          }
         return sb.toString();
     }
 
-    static List<Integer> historyFromString(String value) {
+    static List<Integer> historyFromString(String value) { //непонятно для чего
         List<Integer> history = new ArrayList<>();
         if (value.isEmpty()) {
             System.out.println("Передана пустая строка");
@@ -67,7 +76,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         return history;
     }
 
-    public void save() {
+    //static void printHistory()
+
+    public void save() {//это тоже работает
         try (FileWriter fw = new FileWriter("tasks.csv", false)) {
             fw.write("id,type,name,description,status,epic/[subtasksId]\n");
             for (Task task : getTasks().values()) {
@@ -89,22 +100,69 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         }
     }
 
-    public void fromString(String value) {
+    Task fromString(String value) {//тут что то не так
         String[] task = value.split(",");
+        Task newTask = null;
         switch (task[1]) {
             case "TASK":
-                addNewTask(new Task(task[2], task[3], Status.valueOf(task[4])));
+               newTask = new Task(task[2], task[3], Status.valueOf(task[4]));
+                newTask.setId(Integer.parseInt(task[0]));
                 break;
             case "EPIC":
-                addNewEpic(new Epic(task[2], task[3]));
+                newTask = new Epic(task[2], task[3]);
+                newTask.setId(Integer.parseInt(task[0]));
                 break;
             case "SUBTASK":
-                addNewSubTask(new Subtask(task[2], task[3], Integer.parseInt(task[5]), Status.valueOf(task[4])));
+                newTask = new Subtask(task[2], task[3], Integer.parseInt(task[5]), Status.valueOf(task[4]));
+                newTask.setId(Integer.parseInt(task[0]));
                 break;
-            }
-       }
+        }
+        return newTask;
+    }
 
-    public List<Integer> loadFromFile(Path path) throws NullPointerException {
+    public FileBackedTaskManager loadDataFromFile(String fileName) throws IOException {
+        FileBackedTaskManager fbtm = new FileBackedTaskManager(fileName);
+        if (Files.exists(Paths.get(fileName))) {
+            BufferedReader br;
+            try {
+                br = new BufferedReader(new FileReader(fileName));
+                while (br.ready()) {
+                    String line = br.readLine();
+                    if (!line.equals("")) {
+                        fromString(line);
+                        if(fromString(line) != null) {
+                            loadTask(fromString(line));
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                throw new ManagerSaveException("Ошибка чтения данных");
+            }
+        }
+        return fbtm;
+    }
+
+    private void loadTask(Task task) {
+        long maxID = 0;
+        if (task.getTypeTask() == TypeTask.TASK) {
+            tasks.put(task.getId(), task);
+        }
+        if (task.getTypeTask() == TypeTask.EPIC) {
+            epics.put(task.getId(), (Epic) task);
+        }
+        if (task.getTypeTask() == TypeTask.SUBTASK) {
+            if (task instanceof Subtask) {
+                subtasks.put(task.getId(), (Subtask) task);
+            }
+            int epicID = ((Subtask) task).getEpicId();
+            if (epics.containsKey(epicID)) {
+                epics.get(epicID).getSubtaskId().add(task.getId()); // получаем эпик и добавляем в него ссылку на подзадачу
+            }
+        }
+    }
+
+
+    public List<Integer> loadFromFile(Path path) throws ManagerSaveException {
         String line = " ";
         String cvsSplitBy = ",";
         try (BufferedReader br = new BufferedReader(new FileReader(String.valueOf(path)))) {
@@ -114,25 +172,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 history.add(Integer.parseInt(task[0]));
                 fromString(line);
             }
-        } catch (IOException ManagerSaveException) {
-            throw ManagerSaveException("Ошибка чтения данных");
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка чтения данных" + e.getMessage());
         }
         return history;
-    }
-
-    private NullPointerException ManagerSaveException(String ошибка_чтения_данных) {
-        return null;
-    }
-
-
-    public static void loadDataFromFile(String fileName) throws IOException {
-        FileReader fr = new FileReader(fileName);
-        BufferedReader br = new BufferedReader(fr);
-        while (br.ready()) {
-            String line = br.readLine();
-            System.out.println(line);
-        }
-        br.close();
     }
 
 
@@ -146,6 +189,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         super.addNewTask(task);
         save();
     }
+
+    public void addOldTask(Task task) {
+        super.addNewTask(task);
+        }
 
     @Override
     public void addNewEpic(Epic epic) {
@@ -294,6 +341,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         super.printHistory();
         save();
     }
+}
 
 
+class ManagerSaveException extends IOException {
+    public ManagerSaveException() {
+    }
+
+    public ManagerSaveException(final String message) {
+        super(message);
+    }
 }

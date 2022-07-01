@@ -47,9 +47,7 @@ public class Task {
         sb.append(",").append(getStatus());
         return sb.toString();
     }
-    public TypeTask getTypeTask() {
-        return typeTask;
-    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -97,5 +95,9 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public TypeTask getTypeTask() {
+        return typeTask;
     }
 }

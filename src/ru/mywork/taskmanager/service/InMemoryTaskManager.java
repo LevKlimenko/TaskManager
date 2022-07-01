@@ -1,9 +1,6 @@
 package ru.mywork.taskmanager.service;
 
-import ru.mywork.taskmanager.model.Epic;
-import ru.mywork.taskmanager.model.Subtask;
-import ru.mywork.taskmanager.model.Task;
-import ru.mywork.taskmanager.model.Status;
+import ru.mywork.taskmanager.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,9 +11,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
+    protected final HashMap<Integer, Epic> epics = new HashMap<>();
+    protected final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    protected final HashMap<Integer, Task> tasks = new HashMap<>();
     protected HistoryManager historyManager = Managers.getDefaultHistory();
     private int generatorId = 0;
 
@@ -24,6 +21,7 @@ public class InMemoryTaskManager implements TaskManager {
     public int getGeneratorId() {
         return generatorId;
     }
+
 
     @Override
     public void addNewTask(Task task) {
@@ -143,7 +141,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         if (epics.containsKey(id)) {
             historyManager.add(epics.get(id));
-            printEpic(epics.get(id));
+            System.out.println(epics.get(id));
             return;
         }
         if (subtasks.containsKey(id)) {

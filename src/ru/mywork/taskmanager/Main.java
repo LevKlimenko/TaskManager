@@ -14,7 +14,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         System.out.println("Проверка работы :");
         FileBackedTaskManager manager = new FileBackedTaskManager("tasks.csv");
-        manager.loadDataFromFile("tasks.csv");
+       // manager.loadDataFromFile("tasks.csv");
        //System.out.println(manager.loadFromFile(Paths.get("tasks.csv")));
         Task task1 = new Task("Купить корм кошке", "Магазин Лапки");
         manager.addNewTask(task1);
@@ -26,7 +26,7 @@ public class Main {
         manager.addNewSubTask(subtask1);
         Subtask subtask2 = new Subtask("Мусор", "Выкинуть мусор", epic1.getId(), Status.NEW);
         manager.addNewSubTask(subtask2);
-        System.out.println(epic1.toString());
+        manager.printById(epic1.getId());
         manager.printById(subtask1.getId());
         manager.printById(task1.getId());
         manager.printHistory();
