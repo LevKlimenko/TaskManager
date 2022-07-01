@@ -25,11 +25,11 @@ public class Epic extends Task {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Epic{");
-        sb.append("id=").append(this.getId());
-        sb.append(", type='").append(this.getTypeTask()).append('\'');
-        sb.append(", name='").append(this.getName()).append('\'');
-        sb.append(", description='").append(this.getDescription()).append('\'');
-        sb.append(", status=").append(this.getStatus());
+        sb.append("id=").append(getId());
+        sb.append(", type='").append(getTypeTask()).append('\'');
+        sb.append(", name='").append(getName()).append('\'');
+        sb.append(", description='").append(getDescription()).append('\'');
+        sb.append(", status=").append(getStatus());
         sb.append(", subtaskId=").append(getSubtaskId());
         sb.append('}');
         return sb.toString();
@@ -38,10 +38,10 @@ public class Epic extends Task {
     public String toStringInFile() {
         final StringBuilder sb = new StringBuilder();
         sb.append(this.getId());
-        sb.append(",").append(this.getTypeTask());
-        sb.append(",").append(this.getName());
-        sb.append(",").append(this.getDescription());
-        sb.append(",").append(this.getStatus());
+        sb.append(",").append(getTypeTask());
+        sb.append(",").append(getName());
+        sb.append(",").append(getDescription());
+        sb.append(",").append(getStatus());
         sb.append(",").append(getSubtaskId());
         return sb.toString();
     }

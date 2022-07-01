@@ -17,6 +17,10 @@ public class InMemoryTaskManager implements TaskManager {
     protected HistoryManager historyManager = Managers.getDefaultHistory();
     private int generatorId = 0;
 
+    public void setGeneratorId(int generatorId) {
+        this.generatorId = generatorId;
+    }
+
     @Override
     public int getGeneratorId() {
         return generatorId;

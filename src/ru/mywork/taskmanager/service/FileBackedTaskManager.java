@@ -14,17 +14,14 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
 
-    ArrayList<Integer> history = new ArrayList<>();
+    ArrayList<Integer> history;
     private String fileName;
 
-
-    public String getHistory1() {
-        return historyToString(historyManager); ///верное решение?
-    }
 
     public FileBackedTaskManager() {
 
     }
+
     public FileBackedTaskManager(String fileName) {
         this.fileName = fileName;
         if (!Files.exists(Paths.get(fileName))) {
@@ -58,8 +55,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             sb.append(task.getId());
             if (manager.getHistory().indexOf(task) < manager.getHistory().size() - 1) {
                 sb.append(",");
-                            }
-          }
+            }
+        }
         return sb.toString();
     }
 
@@ -74,6 +71,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             history.add(Integer.parseInt(str));
         }
         return history;
+    }
+
+    public String getHistory1() {
+        return historyToString(historyManager); ///верное решение?
     }
 
     //static void printHistory()
@@ -105,18 +106,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         Task newTask = null;
         switch (task[1]) {
             case "TASK":
-               newTask = new Task(task[2], task[3], Status.valueOf(task[4]));
+                newTask = new Task(task[2], task[3], Status.valueOf(task[4]));
                 newTask.setId(Integer.parseInt(task[0]));
                 break;
             case "EPIC":
                 newTask = new Epic(task[2], task[3]);
                 newTask.setId(Integer.parseInt(task[0]));
+                newTask.setStatus(Status.valueOf(task[4]));
                 break;
             case "SUBTASK":
                 newTask = new Subtask(task[2], task[3], Integer.parseInt(task[5]), Status.valueOf(task[4]));
                 newTask.setId(Integer.parseInt(task[0]));
                 break;
         }
+
         return newTask;
     }
 
@@ -130,8 +133,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                     String line = br.readLine();
                     if (!line.equals("")) {
                         fromString(line);
-                        if(fromString(line) != null) {
+                        if (fromString(line) != null) {
                             loadTask(fromString(line));
+
                         }
                     }
                 }
@@ -146,7 +150,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         long maxID = 0;
         if (task.getTypeTask() == TypeTask.TASK) {
             tasks.put(task.getId(), task);
-        }
+           }
         if (task.getTypeTask() == TypeTask.EPIC) {
             epics.put(task.getId(), (Epic) task);
         }
@@ -158,6 +162,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             if (epics.containsKey(epicID)) {
                 epics.get(epicID).getSubtaskId().add(task.getId()); // получаем эпик и добавляем в него ссылку на подзадачу
             }
+
+        }
+        if(task.getId()>getGeneratorId()){
+            setGeneratorId(task.getId());
         }
     }
 
@@ -192,7 +200,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
     public void addOldTask(Task task) {
         super.addNewTask(task);
-        }
+    }
 
     @Override
     public void addNewEpic(Epic epic) {
@@ -203,6 +211,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     @Override
     public void addNewSubTask(Subtask subtask) {
         super.addNewSubTask(subtask);
+        updateEpic(epics.get(subtask.getEpicId()));
         save();
     }
 
@@ -215,6 +224,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     @Override
     public void updateSubtask(Subtask subtask) {
         super.updateSubtask(subtask);
+        updateEpic(epics.get(subtask.getEpicId()));
         save();
     }
 
@@ -252,8 +262,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
     @Override
     public void printById(int id) {
+        if (subtasks.containsKey(id)) {
+            updateEpic(epics.get(subtasks.get(id).getEpicId()));
+        }
         super.printById(id);
         save();
+
     }
 
     @Override

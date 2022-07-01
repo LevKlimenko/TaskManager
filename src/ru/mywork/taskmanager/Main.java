@@ -22,7 +22,7 @@ public class Main {
         System.out.println("Работа с эпиком");
         Epic epic1 = new Epic("Уборка", "Убраться в квартире");
         manager.addNewEpic(epic1);
-        Subtask subtask1 = new Subtask("Пропылесосить", "Кухня и комната", epic1.getId(), Status.NEW);
+        Subtask subtask1 = new Subtask("Пропылесосить", "Кухня и комната", epic1.getId(), Status.IN_PROGRESS);
         manager.addNewSubTask(subtask1);
         Subtask subtask2 = new Subtask("Мусор", "Выкинуть мусор", epic1.getId(), Status.NEW);
         manager.addNewSubTask(subtask2);
