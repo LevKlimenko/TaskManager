@@ -59,7 +59,7 @@ public class Managers {
         managers.printById(2);
                Subtask subtask4 = new Subtask("Посуда", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS);
         managers.addNewSubTask(subtask4);
-        Subtask subtask5 = new Subtask("Посуда", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS);
+        Subtask subtask5 = new Subtask("Посуда", "Помыть посуду", epic1.getId(), Status.DONE);
         managers.addNewSubTask(subtask5);
         managers.printById(7);
        // FileBackedTaskManager.loadDataFromFile("tasks.csv");

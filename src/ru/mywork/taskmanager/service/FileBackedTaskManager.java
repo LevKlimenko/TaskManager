@@ -101,6 +101,28 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         }
     }
 
+    public FileBackedTaskManager loadDataFromFile(String fileName) throws IOException {
+        FileBackedTaskManager fbtm = new FileBackedTaskManager(fileName);
+        if (Files.exists(Paths.get(fileName))) {
+            BufferedReader br;
+            try {
+                br = new BufferedReader(new FileReader(fileName));
+                while (br.ready()) {
+                    String line = br.readLine();
+                    if (!line.equals("")) {
+                        fromString(line);
+                        if (fromString(line) != null) {
+                            loadTask(fromString(line));
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                throw new ManagerSaveException("Ошибка чтения данных");
+            }
+        }
+        return fbtm;
+    }
+
     Task fromString(String value) {//тут что то не так
         String[] task = value.split(",");
         Task newTask = null;
@@ -123,29 +145,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         return newTask;
     }
 
-    public FileBackedTaskManager loadDataFromFile(String fileName) throws IOException {
-        FileBackedTaskManager fbtm = new FileBackedTaskManager(fileName);
-        if (Files.exists(Paths.get(fileName))) {
-            BufferedReader br;
-            try {
-                br = new BufferedReader(new FileReader(fileName));
-                while (br.ready()) {
-                    String line = br.readLine();
-                    if (!line.equals("")) {
-                        fromString(line);
-                        if (fromString(line) != null) {
-                            loadTask(fromString(line));
-
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                throw new ManagerSaveException("Ошибка чтения данных");
-            }
-        }
-        return fbtm;
-    }
-
     private void loadTask(Task task) {
         long maxID = 0;
         if (task.getTypeTask() == TypeTask.TASK) {
@@ -162,7 +161,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             if (epics.containsKey(epicID)) {
                 epics.get(epicID).getSubtaskId().add(task.getId()); // получаем эпик и добавляем в него ссылку на подзадачу
             }
-
         }
         if(task.getId()>getGeneratorId()){
             setGeneratorId(task.getId());
