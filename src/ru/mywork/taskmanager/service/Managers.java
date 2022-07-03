@@ -46,24 +46,25 @@ public class Managers {
         manager.printById(epic1.getId());
         manager.printById(subtask1.getId());
         manager.printById(task1.getId());
+        manager.printById(epic1.getId());
         manager.printHistory();
         System.out.println("Это история просмотров-->" +manager.getHistory1());
 
-        FileBackedTaskManager managers = FileBackedTaskManager.loadFromFile(new File("tasks.csv"));
+        FileBackedTaskManager managers = FileBackedTaskManager.loadFromFile(Paths.get("tasks.csv"));
         System.out.println("----История----");
-        System.out.println(managers.getHistory());
+        managers.getHistoryFromFile();
         System.out.println("----Конец----");
        // manager.printAll();
        // managers.printAll();
         managers.printById(1);
         managers.printById(2);
-               Subtask subtask4 = new Subtask("Посуда", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS);
-        managers.addNewSubTask(subtask4);
+          Subtask subtask4 = new Subtask("Посуда", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS);
+     managers.addNewSubTask(subtask4);
         Subtask subtask5 = new Subtask("Посуда", "Помыть посуду", epic1.getId(), Status.DONE);
-        managers.addNewSubTask(subtask5);
-        managers.printById(7);
-       // FileBackedTaskManager.loadDataFromFile("tasks.csv");
-      // System.out.println(managers.loadFromFile(Paths.get("tasks.csv")));
+       managers.addNewSubTask(subtask5);
+      managers.printById(7);
+       //FileBackedTaskManager.loadDataFromFile("tasks.csv");
+     // System.out.println(managers.loadFromFile(Paths.get("tasks.csv")));
 
 
 

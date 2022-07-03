@@ -14,7 +14,9 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
 
-    ArrayList<Integer> history;
+    public ArrayList<Task> history;
+    public List <Integer> historyInt;
+    public HashMap<Integer,Task> historyTask;
     private String fileName;
 
 
@@ -34,12 +36,27 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         }
     }
 
-    static FileBackedTaskManager loadFromFile(File file) {
+    public void getHistoryFromFile() {
+        for (Integer task:historyInt) {
+            if (tasks.containsKey(task)){
+                System.out.println(tasks.get(task));
+                }
+            else if (epics.containsKey(task)){
+                System.out.println(epics.get(task));
+            }
+            else if (subtasks.containsKey(task)){
+                System.out.println(subtasks.get(task));
+            }
+
+        }
+    }
+
+    static FileBackedTaskManager loadFromFile(Path path) {
         FileBackedTaskManager load = new FileBackedTaskManager();
         try {
-            load.loadDataFromFile(String.valueOf(file));
+            load.loadDataFromFile(String.valueOf(path));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return load;
     }
@@ -60,17 +77,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         return sb.toString();
     }
 
-    static List<Integer> historyFromString(String value) { //непонятно для чего
-        List<Integer> history = new ArrayList<>();
+
+
+    List<Integer> historyFromString(String value) { //непонятно для чего
+        this.historyInt = new ArrayList<>();
         if (value.isEmpty()) {
             System.out.println("Передана пустая строка");
             return Collections.emptyList();
         }
         String[] line = value.split(",");
         for (String str : line) {
-            history.add(Integer.parseInt(str));
+            historyInt.add(Integer.parseInt(str));
         }
-        return history;
+        return historyInt;
     }
 
     public String getHistory1() {
@@ -115,6 +134,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                             loadTask(fromString(line));
                         }
                     }
+                    else {
+                        line = br.readLine();
+                        if ((line != null && !line.isEmpty())){
+                            historyFromString(line);
+                        }
+                    }
                 }
             } catch (IOException e) {
                 throw new ManagerSaveException("Ошибка чтения данных");
@@ -122,6 +147,30 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         }
         return fbtm;
     }
+
+    public void loadFromOldFile(Path path) throws ManagerLoadException {
+        try (Reader reader = new FileReader(path.toString());
+             BufferedReader buffer = new BufferedReader(reader)) {
+            String line;
+            buffer.readLine();
+            while (buffer.ready()){
+                line = buffer.readLine();
+                if(!line.isEmpty()){
+                    fromString(line);
+                }
+                else{
+                    line = buffer.readLine();
+                    if ((line != null && !line.isEmpty())){
+                        historyFromString(line);
+                    }
+                    break;
+                }
+            }
+        } catch (IOException ex) {
+            throw new ManagerLoadException(ex.getMessage());
+        }
+    }
+
 
     Task fromString(String value) {//тут что то не так
         String[] task = value.split(",");
@@ -168,7 +217,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
 
-    public List<Integer> loadFromFile(Path path) throws ManagerSaveException {
+   /* public List<Integer> loadFromFile(Path path) throws ManagerSaveException {
         String line = " ";
         String cvsSplitBy = ",";
         try (BufferedReader br = new BufferedReader(new FileReader(String.valueOf(path)))) {
@@ -183,6 +232,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         }
         return history;
     }
+
+    */
+
 
 
     @Override
@@ -352,6 +404,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     public void printHistory() {
         super.printHistory();
         save();
+    }
+
+    private class ManagerLoadException extends Throwable {
+        public ManagerLoadException(String message) {
+            super(message);
+        }
     }
 }
 
