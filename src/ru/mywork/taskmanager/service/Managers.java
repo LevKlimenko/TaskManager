@@ -7,9 +7,6 @@ import ru.mywork.taskmanager.model.Task;
 
 import java.io.*;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class Managers {
 
@@ -22,16 +19,11 @@ public class Managers {
         return new InMemoryHistoryManager();
     }
 
-    public static TaskManager getSavedHistory(){
-        return new FileBackedTaskManager("tasks.csv");
-    }
 
-    public static void main(String[] args) throws ManagerSaveException, IOException {
+    public static void main(String[] args) throws IOException {
 
         FileBackedTaskManager manager = new FileBackedTaskManager("tasks.csv");
-        // manager.loadDataFromFile("tasks.csv");
-        //System.out.println(manager.loadFromFile(Paths.get("tasks.csv")));
-        Task task1 = new Task("Купить корм кошке", "Магазин Лапки",Status.DONE);
+        Task task1 = new Task("Купить корм кошке", "Магазин Лапки", Status.DONE);
         manager.addNewTask(task1);
         System.out.println("________________________________________");
         System.out.println("Работа с эпиком");
@@ -41,37 +33,29 @@ public class Managers {
         manager.addNewSubTask(subtask1);
         Subtask subtask2 = new Subtask("Мусор", "Выкинуть мусор", epic1.getId(), Status.DONE);
         manager.addNewSubTask(subtask2);
-        Subtask subtask3 = new Subtask("Посуда", "Помыть посуду", epic1.getId(), Status.NEW);
+        Subtask subtask3 = new Subtask("Посуда", "Помыть посуду", epic1.getId(), Status.DONE);
         manager.addNewSubTask(subtask3);
         manager.printById(epic1.getId());
         manager.printById(subtask1.getId());
         manager.printById(task1.getId());
         manager.printById(epic1.getId());
         manager.printHistory();
-        System.out.println("Это история просмотров-->" +manager.getHistory1());
+        System.out.println("Это история просмотров-->" + manager.getHistoryInt());
 
         FileBackedTaskManager managers = FileBackedTaskManager.loadFromFile(Paths.get("tasks.csv"));
         System.out.println("----История----");
         managers.getHistoryFromFile();
         System.out.println("----Конец----");
-       // manager.printAll();
-       // managers.printAll();
         managers.printById(1);
         managers.printById(2);
-          Subtask subtask4 = new Subtask("Посуда", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS);
-     managers.addNewSubTask(subtask4);
-        Subtask subtask5 = new Subtask("Посуда", "Помыть посуду", epic1.getId(), Status.DONE);
-       managers.addNewSubTask(subtask5);
-      managers.printById(7);
-       //FileBackedTaskManager.loadDataFromFile("tasks.csv");
-     // System.out.println(managers.loadFromFile(Paths.get("tasks.csv")));
+        Subtask subtask4 = new Subtask("Посуда", "Помыть посуду", epic1.getId(), Status.DONE);
+        managers.addNewSubTask(subtask4);
+        Subtask subtask5 = new Subtask("Посуда", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS);
+        managers.addNewSubTask(subtask5);
+        managers.printById(7);
 
 
-
-
-
-
-             }
+    }
 
 
 }

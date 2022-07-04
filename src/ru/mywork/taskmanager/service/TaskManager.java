@@ -12,29 +12,29 @@ public interface TaskManager {
 
     int getGeneratorId();
 
-    void addNewTask(Task task);
+    void addNewTask(Task task) throws FileBackedTaskManager.ManagerSaveException;
 
-    void addNewEpic(Epic epic);
+    void addNewEpic(Epic epic) throws FileBackedTaskManager.ManagerSaveException;
 
-    void addNewSubTask(Subtask subtask);
+    void addNewSubTask(Subtask subtask) throws FileBackedTaskManager.ManagerSaveException;
 
-    void updateTask(Task task);
+    void updateTask(Task task) throws FileBackedTaskManager.ManagerSaveException;
 
-    void updateSubtask(Subtask subtask);
+    void updateSubtask(Subtask subtask) throws FileBackedTaskManager.ManagerSaveException;
 
-    void updateEpic(Epic epic);
+    void updateEpic(Epic epic) throws FileBackedTaskManager.ManagerSaveException;
 
-    void updateStatusEpic(Epic epic);
+    void updateStatusEpic(Epic epic) throws FileBackedTaskManager.ManagerSaveException;
 
-    void printEpic(Epic epic);
+    void printEpic(Epic epic) throws FileBackedTaskManager.ManagerSaveException;
 
-    List<Subtask> getSubtaskByEpicId(int id);
+    List<Subtask> getSubtaskByEpicId(int id) throws FileBackedTaskManager.ManagerSaveException;
 
-    void printAll();
+    void printAll() throws FileBackedTaskManager.ManagerSaveException;
 
-    void printById(int id);
+    void printById(int id) throws FileBackedTaskManager.ManagerSaveException;
 
-    void getAllTask();
+    void getAllTask() throws FileBackedTaskManager.ManagerSaveException;
 
     HashMap<Integer, Epic> getEpics();
 
@@ -42,28 +42,28 @@ public interface TaskManager {
 
     HashMap<Integer, Task> getTasks();
 
-    Task getTaskById(int id);
+    Task getTaskById(int id) throws FileBackedTaskManager.ManagerSaveException;
 
-    Epic getEpicById(int id);
+    Epic getEpicById(int id) throws FileBackedTaskManager.ManagerSaveException;
 
-    Subtask getSubtaskById(int id);
+    Subtask getSubtaskById(int id) throws FileBackedTaskManager.ManagerSaveException;
 
-    void clearTask();
+    void clearTask() throws FileBackedTaskManager.ManagerSaveException;
 
-    void clearSubtask();
+    void clearSubtask() throws FileBackedTaskManager.ManagerSaveException;
 
-    void clearEpic();
+    void clearEpic() throws FileBackedTaskManager.ManagerSaveException;
 
     void checkTaskAvailability();
 
-    void deleteTaskById(int id);
+    void deleteTaskById(int id) throws FileBackedTaskManager.ManagerSaveException;
 
 
-    void deleteEpicById(int id);
+    void deleteEpicById(int id) throws FileBackedTaskManager.ManagerSaveException;
 
-    void deleteSubtaskById(int id);
+    void deleteSubtaskById(int id) throws FileBackedTaskManager.ManagerSaveException;
 
     List<Task> getHistory();
 
-    void printHistory();
+    void printHistory() throws FileBackedTaskManager.ManagerSaveException;
 }
