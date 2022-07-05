@@ -6,6 +6,7 @@ import ru.mywork.taskmanager.model.Subtask;
 import ru.mywork.taskmanager.model.Task;
 import ru.mywork.taskmanager.service.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -13,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         System.out.println("Проверка работы :");
-        FileBackedTaskManager manager = new FileBackedTaskManager("tasks.csv");
+        FileBackedTaskManager manager = new FileBackedTaskManager(new File("tasks.csv"));
         Task task1 = new Task("Купить корм кошке", "Магазин Лапки");
         manager.addNewTask(task1);
         System.out.println("________________________________________");
