@@ -12,9 +12,8 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    static String TABLE_HEADER = "id,type,name,description,status,epic/[subtasksId]\n";
-    private List<Integer> historyInt; //использую для считывания истории и записи тасков
-    private File file;
+    private static String TABLE_HEADER = "id,type,name,description,status,epic/[subtasksId]\n";
+    private final File file;
 
 
     public FileBackedTaskManager(File file) {
@@ -78,8 +77,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return sb.toString();
     }
 
-    private void historyFromStringToArray(String value) {
-        historyInt = new ArrayList<>();
+    private void historyFromString(String value) {
+        List<Integer> historyInt = new ArrayList<>();
         if (value.isEmpty()) {
             System.out.println("Передана пустая строка");
             return;
@@ -88,9 +87,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         for (String str : line) {
             historyInt.add(Integer.parseInt(str));
         }
+        getHistoryFromFile(historyInt);
     }
 
-    private void getHistoryFromFile() {
+    private void getHistoryFromFile(List<Integer> historyInt) {
         System.out.println("----История----");
         for (Integer task : historyInt) {
             if (tasks.containsKey(task)) {
@@ -134,12 +134,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     if (line.isBlank()) {
                         line = br.readLine();
                         if ((line != null && !line.isEmpty())) {
-                            historyFromStringToArray(line);
+                            historyFromString(line);
                         }
                     } else {
-                        fromString(line);
-                        if (fromString(line) != null) {
-                            loadTask(fromString(line));
+                        Task taskFromHistory = fromString(line);
+                       if (taskFromHistory != null) {
+                            loadTask(taskFromHistory);
                         }
                     }
                 }
@@ -147,8 +147,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 throw new ManagerLoadException("Ошибка чтения данных");
             }
         }
-        getHistoryFromFile();
-    }
+           }
 
     private Task fromString(String value) {
         String[] task = value.split(",");
@@ -174,21 +173,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private void loadTask(Task task) {
-        if (task.getTypeTask() == TypeTask.TASK) {
-            tasks.put(task.getId(), task);
-        }
-        if (task.getTypeTask() == TypeTask.EPIC) {
-            epics.put(task.getId(), (Epic) task);
-        }
-        if (task.getTypeTask() == TypeTask.SUBTASK) {
-            if (task instanceof Subtask) {
+        switch (task.getTypeTask()) {
+            case TASK:
+                tasks.put(task.getId(), task);
+                break;
+            case EPIC:
+                epics.put(task.getId(), (Epic) task);
+                break;
+            case SUBTASK:
                 subtasks.put(task.getId(), (Subtask) task);
-            }
-            assert task instanceof Subtask;
-            int epicID = ((Subtask) task).getEpicId();
-            if (epics.containsKey(epicID)) {
-                epics.get(epicID).getSubtaskId().add(task.getId());
-            }
+                int epicID = ((Subtask) task).getEpicId();
+                if (epics.containsKey(epicID)) {
+                    epics.get(epicID).getSubtaskId().add(task.getId());
+
+                }
+                break;
         }
         if (task.getId() > getGeneratorId()) {
             setGeneratorId(task.getId());
