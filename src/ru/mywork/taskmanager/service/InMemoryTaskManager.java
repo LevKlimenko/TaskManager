@@ -1,11 +1,15 @@
 package ru.mywork.taskmanager.service;
 
+import com.sun.source.tree.Tree;
 import ru.mywork.taskmanager.model.*;
 import ru.mywork.taskmanager.errors.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 
 
 public class InMemoryTaskManager implements TaskManager {
@@ -17,6 +21,8 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Task> tasks = new HashMap<>();
     protected HistoryManager historyManager = Managers.getDefaultHistory();
     private int generatorId = 0;
+    private LocalDateTime timeStart = null;
+    private LocalDateTime timeEnd = null;
 
     @Override
     public int getGeneratorId() {
@@ -71,6 +77,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateEpic(Epic epic) throws ManagerSaveException {
         if (epics.containsKey(epic.getId())) {
             updateStatusEpic(epic);
+            setEpicStartAndEndTime();
             epics.put(epic.getId(), epic);
         }
     }
@@ -110,7 +117,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Subtask> getSubtaskByEpicId(int id)  {
+    public List<Subtask> getSubtaskByEpicId(int id) {
         List<Subtask> subtask = new ArrayList<>();
         if (epics.containsKey(id)) {
             for (int i = 0; i < epics.get(id).getSubtaskId().size(); i++) {
@@ -299,5 +306,61 @@ public class InMemoryTaskManager implements TaskManager {
         }
         System.out.println(ANSI_RED + "Конец истории просмотров" + ANSI_RESET);
     }
+
+    @Override
+    public void setEpicStartAndEndTime() {
+        if (!epics.isEmpty()) {
+            for (Integer id : epics.keySet()) {
+                if (!getSubtaskByEpicId(id).isEmpty()) {
+                    List<Integer> subtaskWithDate = new ArrayList<>();
+                    for (Integer idSubtask : epics.get(id).getSubtaskId()) {
+                        if (subtasks.get(idSubtask).getStartTime() != null) {
+                            subtaskWithDate.add(idSubtask);
+                        }
+                    }
+                    if (subtaskWithDate.size() == 1) {
+                        epics.get(id).setStartTime(getSubtaskById(subtaskWithDate.get(0)).getStartTime());
+                        epics.get(id).setDuration(getSubtaskById(subtaskWithDate.get(0)).getDuration());
+                        epics.get(id).setEndTime(getSubtaskById(subtaskWithDate.get(0)).getEndTime());
+                    } else {
+                        timeStart = subtasks.get(subtaskWithDate.get(0)).getStartTime();
+                        timeEnd = subtasks.get(subtaskWithDate.get(0)).getEndTime();
+                        for (int i = 0; i < subtaskWithDate.size(); i++) {
+                            if ((i + 1) != subtaskWithDate.size()) {
+                                if (subtasks.get(subtaskWithDate.get(i + 1)).getStartTime().isBefore(timeStart)) {
+                                    timeStart = subtasks.get(subtaskWithDate.get(i + 1)).getStartTime();
+                                }
+                                if (subtasks.get(subtaskWithDate.get(i)).getEndTime().isBefore(subtasks.get(subtaskWithDate.get(i + 1)).getEndTime())) {
+                                    timeEnd = subtasks.get(subtaskWithDate.get(i + 1)).getEndTime();
+                                }
+                            }
+                        }
+                        epics.get(id).setStartTime(timeStart);
+                        epics.get(id).setEndTime(timeEnd);
+                        Duration between = Duration.between(epics.get(id).getStartTime(), epics.get(id).getEndTime());
+                        int duration = (int) between.toMinutes();
+                        epics.get(id).setDuration(duration);
+                    }
+
+                }
+            }
+        }
+    }
+
+    @Override
+    public int compareTo(Task anotherTask) {
+        if (timeStart.isEqual(anotherTask.getStartTime())) {
+            return (int)(getGeneratorId() - anotherTask.getId());
+        } else if (timeStart.isBefore(anotherTask.getStartTime())) {
+            return -1;
+        } else if (timeStart.isAfter(anotherTask.getStartTime())) {
+            return 1;
+        }
+        return 0;
+    }
+
+
 }
+
+
 

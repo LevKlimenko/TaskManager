@@ -67,4 +67,8 @@ public interface TaskManager {
     List<Task> getHistory();
 
     void printHistory();
+
+    void setEpicStartAndEndTime();
+
+    int compareTo(Task anotherTask);
 }

@@ -1,20 +1,38 @@
 package ru.mywork.taskmanager.model;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Subtask extends Task {
 
     private int epicId;
     protected TypeTask typeTask;
+    protected LocalDateTime endTime;
 
     public Subtask(String name, String description, int epicId) {
         super(name, description);
         this.typeTask=TypeTask.SUBTASK;
         this.epicId = epicId;
+        this.startTime=null;
+        this.duration=0;
     }
 
     public Subtask(String name, String description, int epicId, Status status) {
         super(name, description, status);
+        this.typeTask=TypeTask.SUBTASK;
+        this.epicId = epicId;
+        this.startTime=null;
+        this.duration=0;
+    }
+    public Subtask(String name, String description, int epicId,LocalDateTime localDateTime, int duration) {
+        super(name, description,localDateTime,duration);
+        this.typeTask=TypeTask.SUBTASK;
+        this.epicId = epicId;
+    }
+
+    public Subtask(String name, String description, int epicId, Status status,
+                   LocalDateTime localDateTime, int duration) {
+        super(name, description, status,localDateTime,duration);
         this.typeTask=TypeTask.SUBTASK;
         this.epicId = epicId;
     }
@@ -28,6 +46,10 @@ public class Subtask extends Task {
         sb.append(", description='").append(getDescription()).append('\'');
         sb.append(", status=").append(getStatus());
         sb.append(", epicId=").append(getEpicId());
+        if (getStartTime()!=null) {
+            sb.append(", timeStart=").append(getStartTime().format(formatter));
+            sb.append(", timeEnd=").append(getEndTime().format(formatter));
+        }
         sb.append('}');
         return sb.toString();
     }
@@ -40,6 +62,8 @@ public class Subtask extends Task {
         sb.append(",").append(getDescription());
         sb.append(",").append(getStatus());
         sb.append(",").append(getEpicId());
+       sb.append(",").append(getStartTime());
+        sb.append(",").append(getDuration());
         return sb.toString();
     }
 
@@ -70,4 +94,5 @@ public class Subtask extends Task {
     public void setEpicId(int epicId) {
         this.epicId = epicId;
     }
+
 }

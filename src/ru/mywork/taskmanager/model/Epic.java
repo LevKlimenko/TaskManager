@@ -1,17 +1,31 @@
 package ru.mywork.taskmanager.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
     protected TypeTask typeTask;
+    protected LocalDateTime startTime;
+    protected int duration;
+    protected LocalDateTime endTime;
 
     private ArrayList<Integer> subtaskId = new ArrayList<>();
 
     public Epic(String name, String description) {
         super(name, description);
+        this.startTime=null;
+        this.duration=0;
         this.typeTask = TypeTask.EPIC;
     }
+ public Epic(String name, String description,LocalDateTime startTime,int duration) {
+        super(name, description);
+        this.startTime=startTime;
+        this.duration=duration;
+        this.typeTask = TypeTask.EPIC;
+    }
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -31,6 +45,10 @@ public class Epic extends Task {
         sb.append(", description='").append(getDescription()).append('\'');
         sb.append(", status=").append(getStatus());
         sb.append(", subtaskId=").append(getSubtaskId());
+        if (getStartTime()!=null) {
+            sb.append(", timeStart=").append(getStartTime().format(formatter));
+            sb.append(", timeEnd=").append(getEndTime().format(formatter));
+        }
         sb.append('}');
         return sb.toString();
     }
@@ -43,6 +61,8 @@ public class Epic extends Task {
         sb.append(",").append(getDescription());
         sb.append(",").append(getStatus());
         sb.append(",").append(getSubtaskId());
+        sb.append(",").append(getStartTime());
+        sb.append(",").append(getDuration());
         return sb.toString();
     }
 
@@ -62,5 +82,32 @@ public class Epic extends Task {
 
     public void setSubtaskId(ArrayList<Integer> subtaskId) {
         this.subtaskId = subtaskId;
+    }
+
+    @Override
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    @Override
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+        }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 }

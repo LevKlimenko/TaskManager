@@ -17,13 +17,6 @@ class InMemoryHistoryManager implements HistoryManager {
         linkLast(task);
     }
 
-  /*  @Override
-    public void remove(int id) {                //реализация удаления задач
-        if (taskBrowsingHistory.get(id)!=null) {
-            taskBrowsingHistory.remove(id);
-        }
-
-    }*/
 
     @Override
     public void remove(int id) {
