@@ -70,5 +70,4 @@ public interface TaskManager {
 
     void setEpicStartAndEndTime();
 
-    int compareTo(Task anotherTask);
-}
+    }

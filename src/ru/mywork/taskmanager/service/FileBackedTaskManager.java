@@ -33,13 +33,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static void main(String[] args) {
 
         FileBackedTaskManager manager = new FileBackedTaskManager(new File("tasks.csv"));
-        Task task1 = new Task("Купить корм кошке", "Магазин Лапки", Status.DONE, LocalDateTime.now(), 20);
+        Task task1 = new Task("Купить корм кошке", "Магазин Лапки", Status.DONE);
         manager.addNewTask(task1);
         System.out.println("________________________________________");
         System.out.println("Работа с эпиком");
         Epic epic1 = new Epic("Уборка", "Убраться в квартире");
         manager.addNewEpic(epic1);
-        Subtask subtask1 = new Subtask("Пропылесосить", "Кухня и комната", epic1.getId(), Status.DONE, LocalDateTime.now(), 35);
+        Subtask subtask1 = new Subtask("Пропылесосить", "Кухня и комната", epic1.getId(), Status.DONE,LocalDateTime.of(2022,3,3,12,20),10);
         manager.addNewSubTask(subtask1);
         Subtask subtask2 = new Subtask("Мусор", "Выкинуть мусор", epic1.getId(), Status.DONE);
         manager.addNewSubTask(subtask2);
@@ -50,17 +50,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         manager.printById(task1.getId());
         manager.printById(epic1.getId());
         manager.printHistory();
+        manager.generateSortedTasks();
 
         FileBackedTaskManager managers = FileBackedTaskManager.loadFromFile(new File("tasks.csv"));
 
-        System.out.println(managers.getSubtaskByEpicId(2));
-      Subtask subtask4 = new Subtask("Посуда", "Помыть посуду", epic1.getId(), Status.DONE, LocalDateTime.now().plusMinutes(10), 35);
+         Subtask subtask4 = new Subtask("Посуда4", "Помыть посуду", epic1.getId(), Status.DONE);
        managers.addNewSubTask(subtask4);
-       Subtask subtask5 = new Subtask("Посуда", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS,LocalDateTime.now().plusMinutes(15), 37);
-       managers.addNewSubTask(subtask5);
+        Subtask subtask6 = new Subtask("Посуда6", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS);
+        managers.addNewSubTask(subtask6);
+        Subtask subtask5 = new Subtask("Посуда5", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS, LocalDateTime.of(2022,3,3,12,5),10);
+        managers.addNewSubTask(subtask5);
        managers.printById(6);
-     managers.printById(7);
+         managers.printById(7);
        managers.printById(2);
+        managers.generateSortedTasks();
     }
 
     private String historyToString(HistoryManager manager) {
@@ -156,7 +159,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         Task newTask = null;
         switch (TypeTask.valueOf(task[1])) {
             case TASK:
-                newTask = new Task(task[2], task[3], Status.valueOf(task[4]), LocalDateTime.parse(task[5]), Integer.parseInt(task[6]));
+                if(!task[5].equals("null")) {
+                    newTask = new Task(task[2], task[3], Status.valueOf(task[4]), LocalDateTime.parse(task[5]), Integer.parseInt(task[6]));
+                }else{
+                    newTask = new Task(task[2], task[3], Status.valueOf(task[4]));
+                }
                 newTask.setId(Integer.parseInt(task[0]));
                 break;
             case EPIC:
@@ -323,51 +330,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         super.deleteSubtaskById(id);
         save();
     }
-  /*  @Override
-    public void setEpicStartAndEndTime() {
-        if (!epics.isEmpty()) {
-            for (Integer id : epics.keySet()) {
-                if (!getSubtaskByEpicId(id).isEmpty()) {
-                    ArrayList<Integer> subtaskWithDate = new ArrayList<>();
-                    for (Integer idSubtask:epics.get(id).getSubtaskId()) {
-                        if (subtasks.get(idSubtask).getStartTime()!=null){
-                            subtaskWithDate.add(idSubtask);
-                        }
-                    }
-                    if (subtaskWithDate.size() == 1) {
-                        epics.get(id).setStartTime(getSubtaskById(subtaskWithDate.get(0)).getStartTime());
-                        epics.get(id).setDuration(getSubtaskById(subtaskWithDate.get(0)).getDuration());
-                        epics.get(id).setEndTime(getSubtaskById(subtaskWithDate.get(0)).getEndTime());
-                    } else {
-                        LocalDateTime timeStart=null;
-                        LocalDateTime timeEnd=null;
-
-                        for (int i = 0; i < subtaskWithDate.size(); i++) {
-                            if ((i + 1) != subtaskWithDate.size()) {
-
-                                if (getSubtaskById(subtaskWithDate.get(i)).getStartTime().isAfter(getSubtaskById(subtaskWithDate.get(i + 1)).getStartTime())) {
-                                    timeStart = getSubtaskById(subtaskWithDate.get(i + 1)).getStartTime();
-                                } else {
-                                    timeStart = getSubtaskById(subtaskWithDate.get(i)).getStartTime();
-                                }
-                                if (getSubtaskById(subtaskWithDate.get(i)).getEndTime().isAfter(getSubtaskById(subtaskWithDate.get(i + 1)).getEndTime())) {
-                                    timeEnd = getSubtaskById(subtaskWithDate.get(i)).getEndTime();
-                                } else {
-                                    timeEnd = getSubtaskById(subtaskWithDate.get(i + 1)).getEndTime();
-                                }
-                            }
-                        }
-                        epics.get(id).setStartTime(timeStart);
-                        epics.get(id).setEndTime(timeEnd);
-                        Duration between = Duration.between(epics.get(id).getStartTime(),epics.get(id).getEndTime());
-                        int duration=(int)between.toMinutes();
-                        epics.get(id).setDuration(duration);
-                    }
-
-                }
-            }
-        }
-    }*/
 
 }
 

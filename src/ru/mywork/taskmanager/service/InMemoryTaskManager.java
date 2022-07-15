@@ -1,15 +1,13 @@
 package ru.mywork.taskmanager.service;
 
 import com.sun.source.tree.Tree;
+import org.w3c.dom.ls.LSOutput;
 import ru.mywork.taskmanager.model.*;
 import ru.mywork.taskmanager.errors.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 
 
 public class InMemoryTaskManager implements TaskManager {
@@ -20,6 +18,22 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Subtask> subtasks = new HashMap<>();
     protected final HashMap<Integer, Task> tasks = new HashMap<>();
     protected HistoryManager historyManager = Managers.getDefaultHistory();
+    TreeSet<Task> sortedTasks = new TreeSet<>((o1, o2) -> {
+        if (o1.getStartTime() == null) {
+            if (o2.getStartTime() == null) {
+                return o1.getId() - o2.getId();
+            } else {
+                return 1;
+            }
+        } else if (o2.getStartTime() == null) {
+            return -1;
+        } else if (o1.getStartTime().isBefore(o2.getStartTime())) {
+            return -1;
+        } else if (o1.getStartTime().isAfter(o2.getStartTime())) {
+            return 1;
+        }
+        return 0;
+    });
     private int generatorId = 0;
     private LocalDateTime timeStart = null;
     private LocalDateTime timeEnd = null;
@@ -35,42 +49,52 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addNewTask(Task task) throws ManagerSaveException {
+        // validatorTimeTasks(task);
         int id = ++generatorId;
         task.setId(id);
         tasks.put(id, task);
+        generateSortedTasks();
     }
 
     @Override
     public void addNewEpic(Epic epic) throws ManagerSaveException {
+        //validatorTimeTasks(epic);
         int id = ++generatorId;
         epic.setId(id);
         epics.put(id, epic);
+        generateSortedTasks();
     }
 
     @Override
     public void addNewSubTask(Subtask subtask) throws ManagerSaveException {
         if (epics.containsKey(subtask.getEpicId())) {
+            // validatorTimeTasks(subtask);
             int id = ++generatorId;
             subtask.setId(id);
             subtasks.put(id, subtask);
             epics.get(subtask.getEpicId()).getSubtaskId().add(id);
             updateStatusEpic(epics.get(subtask.getEpicId()));
+            generateSortedTasks();
         }
     }
 
     @Override
     public void updateTask(Task task) throws ManagerSaveException {
+        // validatorTimeTasks(task);
         if (tasks.containsKey(task.getId())) {
             tasks.put(task.getId(), task);
         }
+        generateSortedTasks();
     }
 
     @Override
     public void updateSubtask(Subtask subtask) throws ManagerSaveException {
+        //validatorTimeTasks(subtask);
         if (subtasks.containsKey(subtask.getId())) {
             subtasks.put(subtask.getId(), subtask);
             updateStatusEpic((epics.get(subtasks.get(subtask.getId()).getEpicId())));
         }
+        generateSortedTasks();
     }
 
     @Override
@@ -307,6 +331,7 @@ public class InMemoryTaskManager implements TaskManager {
         System.out.println(ANSI_RED + "Конец истории просмотров" + ANSI_RESET);
     }
 
+
     @Override
     public void setEpicStartAndEndTime() {
         if (!epics.isEmpty()) {
@@ -319,10 +344,9 @@ public class InMemoryTaskManager implements TaskManager {
                         }
                     }
                     if (subtaskWithDate.size() == 1) {
-                        epics.get(id).setStartTime(getSubtaskById(subtaskWithDate.get(0)).getStartTime());
-                        epics.get(id).setDuration(getSubtaskById(subtaskWithDate.get(0)).getDuration());
-                        epics.get(id).setEndTime(getSubtaskById(subtaskWithDate.get(0)).getEndTime());
-                    } else {
+                        timeStart = getSubtaskById(subtaskWithDate.get(0)).getStartTime();
+                        timeEnd = getSubtaskById(subtaskWithDate.get(0)).getEndTime();
+                    } else if (subtaskWithDate.size() > 1) {
                         timeStart = subtasks.get(subtaskWithDate.get(0)).getStartTime();
                         timeEnd = subtasks.get(subtaskWithDate.get(0)).getEndTime();
                         for (int i = 0; i < subtaskWithDate.size(); i++) {
@@ -330,37 +354,62 @@ public class InMemoryTaskManager implements TaskManager {
                                 if (subtasks.get(subtaskWithDate.get(i + 1)).getStartTime().isBefore(timeStart)) {
                                     timeStart = subtasks.get(subtaskWithDate.get(i + 1)).getStartTime();
                                 }
-                                if (subtasks.get(subtaskWithDate.get(i)).getEndTime().isBefore(subtasks.get(subtaskWithDate.get(i + 1)).getEndTime())) {
+                                if (subtasks.get(subtaskWithDate.get(i)).getEndTime()
+                                        .isBefore(subtasks.get(subtaskWithDate.get(i + 1)).getEndTime())) {
                                     timeEnd = subtasks.get(subtaskWithDate.get(i + 1)).getEndTime();
                                 }
                             }
                         }
-                        epics.get(id).setStartTime(timeStart);
-                        epics.get(id).setEndTime(timeEnd);
-                        Duration between = Duration.between(epics.get(id).getStartTime(), epics.get(id).getEndTime());
-                        int duration = (int) between.toMinutes();
-                        epics.get(id).setDuration(duration);
                     }
-
+                    epics.get(id).setStartTime(timeStart);
+                    epics.get(id).setEndTime(timeEnd);
+                    int duration = 0;
+                    if (timeStart != null || timeEnd != null) {
+                        Duration between = Duration.between(epics.get(id).getStartTime(), epics.get(id).getEndTime());
+                        duration = (int) between.toMinutes();
+                    }
+                    epics.get(id).setDuration(duration);
                 }
+
             }
         }
     }
 
-    @Override
-    public int compareTo(Task anotherTask) {
-        if (timeStart.isEqual(anotherTask.getStartTime())) {
-            return (int)(getGeneratorId() - anotherTask.getId());
-        } else if (timeStart.isBefore(anotherTask.getStartTime())) {
-            return -1;
-        } else if (timeStart.isAfter(anotherTask.getStartTime())) {
-            return 1;
+    public void generateSortedTasks() {
+        for (int i = 1; i <= getGeneratorId(); i++) {
+            if (tasks.get(i) != null) {
+                sortedTasks.add(tasks.get(i));
+            } else if (subtasks.get(i) != null) {
+                sortedTasks.add(subtasks.get(i));
+            }
         }
-        return 0;
     }
+    /*for (Task task : sortedTasks) {
+        if (task.getStartTime() != null) {
+            System.out.println(task.getId() + " " + task.getName() + " " + task.getStartTime());
+        } else {
+            System.out.println(task.getId() + " " + task.getName() + " " + " Время не определено");
+        }
+    }*/
+
+    private void validatorTimeTasks(Task task) {
+        ArrayList<Task> sortListTask = new ArrayList<>(sortedTasks);
+        for (Task sortedTask:sortListTask) {
+            if (sortListTask.size()>0 && sortListTask.get(0).getStartTime()!=null&&sortedTask.getStartTime()!=null){
+                if(task.getStartTime().isBefore(sortedTask.getEndTime())&&task.getStartTime().isAfter(sortedTask.getStartTime())){
+                    {
+                        throw new IllformedLocaleException("Новая задача "+ task.getName() + " совпадает по времени с " + sortedTask.getName());
+                    }
+                }
+            }
+
+        }
+
+                    }
 
 
 }
+
 
 
 
