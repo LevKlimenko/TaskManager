@@ -27,15 +27,13 @@ class InMemoryHistoryManager implements HistoryManager {
 
     public List<Task> getHistory() {
         List<Task> history = new ArrayList<>();
-        if (customLinkedList.isEmpty()) {
-           // System.out.println("История пуста");
-        } else {
-            Node node = first;
-            while (node != null) {
-                history.add(node.data);
-                node = node.next;
-            }
+
+        Node node = first;
+        while (node != null) {
+            history.add(node.data);
+            node = node.next;
         }
+
         return history;
     }
 

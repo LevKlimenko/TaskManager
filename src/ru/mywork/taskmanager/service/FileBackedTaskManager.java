@@ -26,6 +26,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager load = new FileBackedTaskManager(file);
+        //FileBackedTaskManager load = new FileBackedTaskManager();
         load.loadDataFromFile(String.valueOf(file));
         return load;
     }
@@ -33,13 +34,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static void main(String[] args) {
 
         FileBackedTaskManager manager = new FileBackedTaskManager(new File("tasks.csv"));
+        //FileBackedTaskManager manager = new FileBackedTaskManager();
         Task task1 = new Task("Купить корм кошке", "Магазин Лапки", Status.DONE);
         manager.addNewTask(task1);
         System.out.println("________________________________________");
         System.out.println("Работа с эпиком");
         Epic epic1 = new Epic("Уборка", "Убраться в квартире");
         manager.addNewEpic(epic1);
-        Subtask subtask1 = new Subtask("Пропылесосить", "Кухня и комната", epic1.getId(), Status.DONE,LocalDateTime.of(2022,3,3,12,20),10);
+        Subtask subtask1 = new Subtask("Пропылесосить", "Кухня и комната", epic1.getId(), Status.DONE, LocalDateTime.of(2022, 3, 3, 12, 25), 10);
         manager.addNewSubTask(subtask1);
         Subtask subtask2 = new Subtask("Мусор", "Выкинуть мусор", epic1.getId(), Status.DONE);
         manager.addNewSubTask(subtask2);
@@ -54,32 +56,36 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         FileBackedTaskManager managers = FileBackedTaskManager.loadFromFile(new File("tasks.csv"));
 
-         Subtask subtask4 = new Subtask("Посуда4", "Помыть посуду", epic1.getId(), Status.DONE);
-       managers.addNewSubTask(subtask4);
-        Subtask subtask6 = new Subtask("Посуда6", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS);
-        managers.addNewSubTask(subtask6);
-        Subtask subtask5 = new Subtask("Посуда5", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS, LocalDateTime.of(2022,3,3,12,5),10);
-        managers.addNewSubTask(subtask5);
-       managers.printById(6);
-         managers.printById(7);
-       managers.printById(2);
-        managers.generateSortedTasks();
+        Subtask subtask4 = new Subtask("Посуда4", "Помыть посуду", epic1.getId(), Status.DONE, LocalDateTime.of(2022, 3, 3, 12, 22), 10);
+        System.out.println(manager.getHistory());
+        managers.addNewSubTask(subtask4);
+        managers.printById(6);
+        //  Subtask subtask6 = new Subtask("Посуда6", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS);
+        // managers.addNewSubTask(subtask6);
+        //  Subtask subtask5 = new Subtask("Посуда5", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS, LocalDateTime.of(2022,3,3,12,31),10);
+        // managers.addNewSubTask(subtask5);
+        // managers.printById(6);
+        //   managers.printById(7);
+        //managers.printById(2);
+
     }
 
     private String historyToString(HistoryManager manager) {
-        List<Task> history = new ArrayList<>(manager.getHistory());
+        //List<Task> history = new ArrayList<>(manager.getHistory());
         StringBuilder sb = new StringBuilder();
-        if (history.isEmpty()) {
-            System.out.println("История просмотров пуста");
-            return sb.toString();
-        }
-        for (Task task : manager.getHistory()) {
+        List<Task> history;
+        history = getHistory();
+        //  if (history.isEmpty()) {
+        //      System.out.println("История просмотров пуста");
+        //      return sb.toString();
+        //   }
+        for (Task task : history) {
             sb.append(task.getId());
             if (manager.getHistory().indexOf(task) < manager.getHistory().size() - 1) {
                 sb.append(",");
             }
         }
-        return sb.toString();
+        return String.valueOf(sb);
     }
 
     private void historyFromString(String value) {
@@ -93,6 +99,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             historyInt.add(Integer.parseInt(str));
         }
         getHistoryFromFile(historyInt);
+
     }
 
     private void getHistoryFromFile(List<Integer> historyInt) {
@@ -111,6 +118,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (FileWriter fw = new FileWriter(file, false)) {
+            //try (FileWriter fw = new FileWriter("tasks.csv", false)) {
             fw.write(TABLE_HEADER);
             for (Task task : getTasks().values()) {
                 fw.write(task.toStringInFile() + "\n");
@@ -159,9 +167,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         Task newTask = null;
         switch (TypeTask.valueOf(task[1])) {
             case TASK:
-                if(!task[5].equals("null")) {
+                if (!task[5].equals("null")) {
                     newTask = new Task(task[2], task[3], Status.valueOf(task[4]), LocalDateTime.parse(task[5]), Integer.parseInt(task[6]));
-                }else{
+                } else {
                     newTask = new Task(task[2], task[3], Status.valueOf(task[4]));
                 }
                 newTask.setId(Integer.parseInt(task[0]));

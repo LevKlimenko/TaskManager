@@ -49,7 +49,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addNewTask(Task task) throws ManagerSaveException {
-        // validatorTimeTasks(task);
+        checkTimeTask(task);
+        generateSortedTasks();
         int id = ++generatorId;
         task.setId(id);
         tasks.put(id, task);
@@ -58,7 +59,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addNewEpic(Epic epic) throws ManagerSaveException {
-        //validatorTimeTasks(epic);
+        generateSortedTasks();
         int id = ++generatorId;
         epic.setId(id);
         epics.put(id, epic);
@@ -68,7 +69,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void addNewSubTask(Subtask subtask) throws ManagerSaveException {
         if (epics.containsKey(subtask.getEpicId())) {
-            // validatorTimeTasks(subtask);
+            checkTimeTask(subtask);
+            generateSortedTasks();
+            checkTimeTask(subtask);
             int id = ++generatorId;
             subtask.setId(id);
             subtasks.put(id, subtask);
@@ -80,7 +83,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) throws ManagerSaveException {
-        // validatorTimeTasks(task);
+        generateSortedTasks();
         if (tasks.containsKey(task.getId())) {
             tasks.put(task.getId(), task);
         }
@@ -89,7 +92,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtask(Subtask subtask) throws ManagerSaveException {
-        //validatorTimeTasks(subtask);
+        generateSortedTasks();
         if (subtasks.containsKey(subtask.getId())) {
             subtasks.put(subtask.getId(), subtask);
             updateStatusEpic((epics.get(subtasks.get(subtask.getId()).getEpicId())));
@@ -384,29 +387,24 @@ public class InMemoryTaskManager implements TaskManager {
             }
         }
     }
-    /*for (Task task : sortedTasks) {
-        if (task.getStartTime() != null) {
-            System.out.println(task.getId() + " " + task.getName() + " " + task.getStartTime());
-        } else {
-            System.out.println(task.getId() + " " + task.getName() + " " + " Время не определено");
-        }
-    }*/
 
-    private void validatorTimeTasks(Task task) {
+    private void checkTimeTask(Task task) {
         ArrayList<Task> sortListTask = new ArrayList<>(sortedTasks);
-        for (Task sortedTask:sortListTask) {
-            if (sortListTask.size()>0 && sortListTask.get(0).getStartTime()!=null&&sortedTask.getStartTime()!=null){
-                if(task.getStartTime().isBefore(sortedTask.getEndTime())&&task.getStartTime().isAfter(sortedTask.getStartTime())){
-                    {
-                        throw new IllformedLocaleException("Новая задача "+ task.getName() + " совпадает по времени с " + sortedTask.getName());
-                    }
+        for (Task sortedTask : sortListTask) {
+            if (sortListTask.get(0).getStartTime() == null || task.getStartTime() == null) {
+                return;
+            }
+            if (sortedTask.getStartTime() != null) {
+                if (task.getStartTime().isBefore(sortedTask.getEndTime())) {
+                    task.setStartTime(sortedTask.getEndTime());
+                    System.out.println("Новая задача " + task.getName() + " совпадает по времени с " + sortedTask.getName() + ". Время старта переопределено");
+                    // throw new IllformedLocaleException("Новая задача " + task.getName() + " совпадает по времени с " + sortedTask.getName());
                 }
+
             }
 
         }
-
-                    }
-
+    }
 
 }
 
