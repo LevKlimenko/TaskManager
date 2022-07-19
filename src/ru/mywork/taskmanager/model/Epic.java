@@ -5,26 +5,21 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
-    protected TypeTask typeTask;
-    protected LocalDateTime startTime;
-    protected int duration;
-    protected LocalDateTime endTime;
 
+    private LocalDateTime endTime;
     private ArrayList<Integer> subtaskId = new ArrayList<>();
 
     public Epic(String name, String description) {
         super(name, description);
-        this.startTime=null;
-        this.duration=0;
-        this.typeTask = TypeTask.EPIC;
-    }
- public Epic(String name, String description,LocalDateTime startTime,int duration) {
-        super(name, description);
-        this.startTime=startTime;
-        this.duration=duration;
-        this.typeTask = TypeTask.EPIC;
+        this.startTime = null;
+        this.duration = 0;
     }
 
+    public Epic(String name, String description, LocalDateTime startTime, int duration) {
+        super(name, description);
+        this.startTime = startTime;
+        this.duration = duration;
+    }
 
 
     @Override
@@ -40,12 +35,11 @@ public class Epic extends Task {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Epic{");
         sb.append("id=").append(getId());
-        sb.append(", type='").append(getTypeTask()).append('\'');
+        sb.append(", type='").append(getType()).append('\'');
         sb.append(", name='").append(getName()).append('\'');
         sb.append(", description='").append(getDescription()).append('\'');
         sb.append(", status=").append(getStatus());
-        sb.append(", subtaskId=").append(getSubtaskId());
-        if (getStartTime()!=null) {
+        if (getStartTime() != null) {
             sb.append(", timeStart=").append(getStartTime().format(formatter));
             sb.append(", timeEnd=").append(getEndTime().format(formatter));
         }
@@ -56,19 +50,18 @@ public class Epic extends Task {
     public String toStringInFile() {
         final StringBuilder sb = new StringBuilder();
         sb.append(this.getId());
-        sb.append(",").append(getTypeTask());
+        sb.append(",").append(getType());
         sb.append(",").append(getName());
         sb.append(",").append(getDescription());
         sb.append(",").append(getStatus());
-        sb.append(",").append(getSubtaskId());
         sb.append(",").append(getStartTime());
         sb.append(",").append(getDuration());
         return sb.toString();
     }
 
     @Override
-    public TypeTask getTypeTask() {
-        return typeTask;
+    public TypeTask getType() {
+        return TypeTask.EPIC;
     }
 
     @Override
@@ -80,27 +73,6 @@ public class Epic extends Task {
         return subtaskId;
     }
 
-    public void setSubtaskId(ArrayList<Integer> subtaskId) {
-        this.subtaskId = subtaskId;
-    }
-
-    @Override
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    @Override
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-        }
 
     @Override
     public LocalDateTime getEndTime() {

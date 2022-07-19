@@ -1,25 +1,15 @@
 package ru.mywork.taskmanager.service;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import ru.mywork.taskmanager.errors.CollisionTaskException;
 import ru.mywork.taskmanager.model.Task;
 import ru.mywork.taskmanager.model.Epic;
 import ru.mywork.taskmanager.model.Subtask;
-import ru.mywork.taskmanager.service.*;
 
-import java.io.File;
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
 
-import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static ru.mywork.taskmanager.model.Status.*;
 
 abstract class TaskManagerTest<T extends TaskManager> {
@@ -32,11 +22,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager = createTaskManager();
     }
 
-    // тут тесты методов
-    @Test
-    public void shouldBeGetHistory() {
-        assertNotNull(taskManager.getHistory(), "История не возвращается");
-    }
 
     @Test
     public void shouldBeTestsTask() {
@@ -57,6 +42,13 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addNewTask(task3);
         taskManager.clearTask();
         assertEquals(0, taskManager.getTasks().size(), "Задачи не удалены.");
+        Task timeTask1 = new Task("timeTask1", "timeTask1 descr",
+                LocalDateTime.of(2022, 1, 1, 1, 0), 10);
+        taskManager.addNewTask(timeTask1);
+        Task timeTask2 = new Task("timeTask2", "timeTask2 descr",
+                LocalDateTime.of(2022, 1, 1, 1, 5), 10);
+        assertThrows(CollisionTaskException.class, () -> taskManager.addNewTask(timeTask2),
+                "Новая задача не входит внутрь существующей");
     }
 
     @Test
@@ -75,7 +67,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(1, taskManager.getEpics().size(), "Неверное количество задач.");
         assertEquals(epic, taskManager.getEpics().get(epic.getId()), "Задачи не совпадают.");
         assertEquals(NEW, taskManager.getEpics().get(epic.getId()).getStatus(), "Статус не совпадает.");
-        Subtask subtaskUpdate = new Subtask(subTask.getName(), subTask.getDescription(), subTask.getEpicId(), IN_PROGRESS);
+        Subtask subtaskUpdate = new Subtask(subTask.getName(), subTask.getDescription(),
+                subTask.getEpicId(), IN_PROGRESS);
         taskManager.addNewSubTask(subtaskUpdate);
         assertEquals(IN_PROGRESS, taskManager.getEpicById(epic.getId()).getStatus(), "Статус не совпадает");
         taskManager.deleteEpicById(epic.getId());
@@ -115,28 +108,20 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addNewSubTask(subTask3);
         taskManager.clearSubtask();
         assertEquals(0, taskManager.getSubtasks().size(), "Подзадачи не удалены");
+        Epic epic1 = new Epic("epic", "epic decr");
+        taskManager.addNewEpic(epic1);
+        Subtask timeSubtask1 = new Subtask("timeSubtask1", "timeSubtask1 descr", epic1.getId(),
+                LocalDateTime.of(2022, 1, 1, 1, 0), 10);
+        taskManager.addNewSubTask(timeSubtask1);
+        Subtask timeSubtask2 = new Subtask("timeSubtask1", "timeSubtask1 descr", epic1.getId(),
+                LocalDateTime.of(2022, 1, 1, 1, 11), 10);
+        taskManager.addNewSubTask(timeSubtask2);
+        assertEquals(epic1.getStartTime(), timeSubtask1.getStartTime(), "Время начала не совпадает");
+        assertEquals(epic1.getEndTime(), timeSubtask2.getEndTime(), "Время конца не совпадает");
+        Subtask timeSubtask3 = new Subtask("timeSubtask2", "timeSubtask2 descr", epic1.getId(),
+                LocalDateTime.of(2022, 1, 1, 1, 5), 10);
+        assertThrows(CollisionTaskException.class, () -> taskManager.addNewSubTask(timeSubtask3),
+                "Новая задача не входит внутрь существующей");
     }
 
-    @Test
-    public void shouldBeFileBackupManager() {
-        File file = new File("test.csv");
-        FileBackedTaskManager fbk = new FileBackedTaskManager(file);
-        Task task = new Task("task1", "descr1", LocalDateTime.of(2022, 6, 1, 10, 0), 30);
-        fbk.addNewTask(task);
-        Epic epic = new Epic("epic1", "descr1");
-        fbk.addNewEpic(epic);
-        Subtask subTask = new Subtask("subtask2", "descr2", epic.getId(), LocalDateTime.of(2022, 6, 1, 11, 30), 30);
-        fbk.addNewSubTask(subTask);
-        Subtask subTask2 = new Subtask("subtask2", "descr2", epic.getId());
-        fbk.addNewSubTask(subTask2);
-        Epic epic2 = new Epic("epic1", "descr1");
-        fbk.addNewEpic(epic2);
-        Task task2 = new Task("task1", "descr1");
-        fbk.addNewTask(task2);
-        fbk.getTaskById(1);
-        fbk.getEpicById(2);
-        fbk.getSubtaskById(3);
-        FileBackedTaskManager fbk2 = new FileBackedTaskManager(file);
-        assertNotNull(fbk2, "Не загружен");
-    }
 }

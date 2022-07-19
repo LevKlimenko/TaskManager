@@ -3,39 +3,39 @@ package ru.mywork.taskmanager.service;
 import ru.mywork.taskmanager.model.Epic;
 import ru.mywork.taskmanager.model.Subtask;
 import ru.mywork.taskmanager.model.Task;
-import ru.mywork.taskmanager.errors.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 
 public interface TaskManager {
 
 
     int getGeneratorId();
 
-    void addNewTask(Task task) throws ManagerSaveException;
+    void addNewTask(Task task);
 
-    void addNewEpic(Epic epic) throws ManagerSaveException;
+    void addNewEpic(Epic epic);
 
-    void addNewSubTask(Subtask subtask) throws ManagerSaveException;
+    void addNewSubTask(Subtask subtask);
 
-    void updateTask(Task task) throws ManagerSaveException;
+    void updateTask(Task task);
 
-    void updateSubtask(Subtask subtask) throws ManagerSaveException;
+    void updateSubtask(Subtask subtask);
 
-    void updateEpic(Epic epic) throws ManagerSaveException;
+    void updateEpic(Epic epic);
 
-    void updateStatusEpic(Epic epic) throws ManagerSaveException;
+    void updateStatusEpic(Epic epic);
 
-    void printEpic(Epic epic) throws ManagerSaveException;
+    void printEpic(Epic epic);
 
-    List<Subtask> getSubtaskByEpicId(int id) throws ManagerSaveException;
+    List<Subtask> getSubtaskByEpicId(int id);
 
-    void printAll() throws ManagerSaveException;
+    void printAll();
 
-    void printById(int id) throws ManagerSaveException;
+    void printById(int id);
 
-    void getAllTask() throws ManagerSaveException;
+    void getAllTask();
 
     HashMap<Integer, Epic> getEpics();
 
@@ -43,31 +43,30 @@ public interface TaskManager {
 
     HashMap<Integer, Task> getTasks();
 
-    Task getTaskById(int id) throws ManagerSaveException;
+    Task getTaskById(int id);
 
-    Epic getEpicById(int id) throws ManagerSaveException;
+    Epic getEpicById(int id);
 
-    Subtask getSubtaskById(int id) throws ManagerSaveException;
+    Subtask getSubtaskById(int id);
 
-    void clearTask() throws ManagerSaveException;
+    void clearTask();
 
-    void clearSubtask() throws ManagerSaveException;
+    void clearSubtask();
 
-    void clearEpic() throws ManagerSaveException;
+    void clearEpic();
 
     void checkTaskAvailability();
 
-    void deleteTaskById(int id) throws ManagerSaveException;
+    void deleteTaskById(int id);
 
 
-    void deleteEpicById(int id) throws ManagerSaveException;
+    void deleteEpicById(int id);
 
-    void deleteSubtaskById(int id) throws ManagerSaveException;
+    void deleteSubtaskById(int id);
 
     List<Task> getHistory();
 
     void printHistory();
 
-    void setEpicStartAndEndTime();
-
+    TreeSet<Task> getSortedTasks();
 }
