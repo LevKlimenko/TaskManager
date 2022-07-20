@@ -39,7 +39,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
                 epic.getId(), LocalDateTime.of(2022, 6, 1, 11, 30), 30);
         taskManager.addNewSubTask(subTask);
         Subtask subTask2 = new Subtask("subtask2", "descr2", epic.getId());
-       taskManager.addNewSubTask(subTask2);
+        taskManager.addNewSubTask(subTask2);
         Epic epic2 = new Epic("epic1", "descr1");
         taskManager.addNewEpic(epic2);
         Task task2 = new Task("task1", "descr1");
@@ -56,7 +56,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
                 "Список эпиков после выгрузки не совпадает");
         assertEquals(taskManager.getSortedTasks(), fbk2.getSortedTasks(),
                 "Сортированные задачи не совпадают");
-       // assertEquals(taskManager.getHistory(), fbk2.getHistory(), "История задач не совпадает");
+        // assertEquals(taskManager.getHistory(), fbk2.getHistory(), "История задач не совпадает");
         assertNotNull(fbk2, "Не загружен");
     }
 }

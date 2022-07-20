@@ -376,7 +376,8 @@ public class InMemoryTaskManager implements TaskManager {
             if (sortedTask.getStartTime() != null) {
                 if (!task.getStartTime().isBefore(sortedTask.getEndTime())) {
                     continue;
-                }if (!task.getEndTime().isAfter(sortedTask.getStartTime())) {
+                }
+                if (!task.getEndTime().isAfter(sortedTask.getStartTime())) {
                     continue;
                 } else {
                     throw new CollisionTaskException("Новая задача " + task.getName() +
