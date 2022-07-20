@@ -52,12 +52,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         //manager.generateSortedTasks();
 
         FileBackedTaskManager managers = FileBackedTaskManager.loadFromFile(new File("tasks.csv"));
+        System.out.println(manager.getSortedTasks());
+        System.out.println(managers.getSortedTasks());
+        System.out.println(managers.getHistory());
 
-        Subtask subtask4 = new Subtask("Посуда4", "Помыть посуду", epic1.getId(), Status.DONE,
-                LocalDateTime.of(2022, 3, 3, 12, 22), 10);
-        System.out.println(manager.getHistory());
-        managers.addNewSubTask(subtask4);
-        managers.printById(6);
+      //  Subtask subtask4 = new Subtask("Посуда4", "Помыть посуду", epic1.getId(), Status.DONE,
+         //       LocalDateTime.of(2022, 3, 3, 12, 22), 10);
+        //System.out.println(manager.getHistory());
+       // managers.addNewSubTask(subtask4);
+      //  managers.printById(6);
         //  Subtask subtask6 = new Subtask("Посуда6", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS);
         // managers.addNewSubTask(subtask6);
         //  Subtask subtask5 = new Subtask("Посуда5", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS,

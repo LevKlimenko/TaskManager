@@ -48,15 +48,17 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         taskManager.getEpicById(2);
         taskManager.getSubtaskById(3);
         FileBackedTaskManager fbk2 = FileBackedTaskManager.loadFromFile(file);
+        //assertEquals(taskManager.getHistory(), fbk2.getHistory(), "История задач не совпадает");
+        assertEquals(taskManager.getSortTask(), fbk2.getSortTask(),
+                "Сортированные задачи не совпадают");
         assertEquals(taskManager.getTasks(), fbk2.getTasks(),
                 "Список задач после выгрузки не совпадает");
         assertEquals(taskManager.getSubtasks(), fbk2.getSubtasks(),
                 "Список подзадач после выгрузки не совпадает");
         assertEquals(taskManager.getEpics(), fbk2.getEpics(),
                 "Список эпиков после выгрузки не совпадает");
-        assertEquals(taskManager.getSortedTasks(), fbk2.getSortedTasks(),
-                "Сортированные задачи не совпадают");
-        // assertEquals(taskManager.getHistory(), fbk2.getHistory(), "История задач не совпадает");
+
+
         assertNotNull(fbk2, "Не загружен");
     }
 }

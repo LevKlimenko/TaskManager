@@ -379,10 +379,10 @@ public class InMemoryTaskManager implements TaskManager {
                 }
                 if (!task.getEndTime().isAfter(sortedTask.getStartTime())) {
                     continue;
-                } else {
-                    throw new CollisionTaskException("Новая задача " + task.getName() +
-                            " совпадает по времени с " + sortedTask.getName());
                 }
+                throw new CollisionTaskException("Новая задача " + task.getName() +
+                        " совпадает по времени с " + sortedTask.getName());
+
             }
         }
     }
