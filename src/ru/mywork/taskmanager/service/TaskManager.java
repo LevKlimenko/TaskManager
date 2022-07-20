@@ -25,8 +25,6 @@ public interface TaskManager {
 
     void updateEpic(Epic epic);
 
-    void updateStatusEpic(Epic epic);
-
     void printEpic(Epic epic);
 
     List<Subtask> getSubtaskByEpicId(int id);
@@ -55,10 +53,7 @@ public interface TaskManager {
 
     void clearEpic();
 
-    void checkTaskAvailability();
-
     void deleteTaskById(int id);
-
 
     void deleteEpicById(int id);
 

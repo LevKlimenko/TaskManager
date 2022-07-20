@@ -12,7 +12,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
     @Test
     public void shouldBeGetHistory() {
-        assertNotNull(createTaskManager().getHistory(),
+        assertNotNull(taskManager.getHistory(),
                 "История не возвращается");
     }
 }

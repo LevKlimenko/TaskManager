@@ -142,8 +142,7 @@ public class Task {
             endTime = null;
         } else {
             endTime = getStartTime().plusMinutes(duration);
-            endTime.format(formatter);
-        }
+           }
         return endTime;
     }
 

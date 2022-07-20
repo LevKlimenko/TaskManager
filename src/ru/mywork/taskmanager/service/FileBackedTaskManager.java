@@ -13,7 +13,7 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    private static String TABLE_HEADER = "id,type,name,description,status,epic/[subtasksId],startTime,duration\n";
+    private final static String TABLE_HEADER = "id,type,name,description,status,epic,startTime,duration\n";
     private final File file;
 
 
@@ -170,7 +170,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 break;
             case EPIC:
                 newTask = new Epic(task[2], task[3]);
-
                 newTask.setId(Integer.parseInt(task[0]));
                 newTask.setStatus(Status.valueOf(task[4]));
                 break;
@@ -180,6 +179,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 } else {
                     newTask = new Subtask(task[2], task[3], Integer.parseInt(task[5]), Status.valueOf(task[4]),
                             LocalDateTime.parse(task[6]), Integer.parseInt(task[7]));
+                    setEpicStartAndEndTime(epics.get(Integer.parseInt(task[5])));
                 }
                 newTask.setId(Integer.parseInt(task[0]));
                 break;
@@ -205,7 +205,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     epics.get(epicID).getSubtaskId().add(task.getId());
                 }
                 sortedTasks.add(task);
-                setEpicStartAndEndTime(epics.get(((Subtask) task).getEpicId()));
+                setEpicStartAndEndTime(epics.get(epicID));
                 break;
         }
         if (task.getId() > getGeneratorId()) {
@@ -248,12 +248,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public void updateEpic(Epic epic) {
         super.updateEpic(epic);
-        save();
-    }
-
-    @Override
-    public void updateStatusEpic(Epic epic) {
-        super.updateStatusEpic(epic);
         save();
     }
 

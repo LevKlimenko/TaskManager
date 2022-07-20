@@ -39,9 +39,10 @@ public class Epic extends Task {
         sb.append(", name='").append(getName()).append('\'');
         sb.append(", description='").append(getDescription()).append('\'');
         sb.append(", status=").append(getStatus());
+        sb.append(", subtaskID=").append(getSubtaskId());
         if (getStartTime() != null) {
             sb.append(", timeStart=").append(getStartTime().format(formatter));
-            sb.append(", timeEnd=").append(getEndTime().format(formatter));
+            sb.append(", duration=").append(getEndTime().format(formatter));
         }
         sb.append('}');
         return sb.toString();

@@ -1,5 +1,6 @@
 package ru.mywork.taskmanager.service;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import ru.mywork.taskmanager.errors.CollisionTaskException;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static ru.mywork.taskmanager.model.Status.*;
 
 abstract class TaskManagerTest<T extends TaskManager> {
-    private T taskManager;
+    protected T taskManager;
 
     abstract T createTaskManager();
 
