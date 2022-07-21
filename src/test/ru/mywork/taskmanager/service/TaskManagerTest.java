@@ -1,6 +1,5 @@
 package ru.mywork.taskmanager.service;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import ru.mywork.taskmanager.errors.CollisionTaskException;
@@ -22,7 +21,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
     private void updateTaskManager() {
         taskManager = createTaskManager();
     }
-
 
     @Test
     public void shouldBeTestsTask() {

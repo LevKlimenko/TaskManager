@@ -3,7 +3,6 @@ package ru.mywork.taskmanager.service;
 import ru.mywork.taskmanager.model.*;
 import ru.mywork.taskmanager.errors.*;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -34,7 +33,6 @@ public class InMemoryTaskManager implements TaskManager {
     });
     private int generatorId = 0;
 
-
     @Override
     public int getGeneratorId() {
         return generatorId;
@@ -47,9 +45,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void addNewTask(Task task) {
         checkTimeTask(task);
-        sortedTasks.add(task);
         int id = ++generatorId;
         task.setId(id);
+        sortedTasks.add(task);
         tasks.put(id, task);
     }
 
@@ -64,9 +62,9 @@ public class InMemoryTaskManager implements TaskManager {
     public void addNewSubTask(Subtask subtask) {
         if (epics.containsKey(subtask.getEpicId())) {
             checkTimeTask(subtask);
-            sortedTasks.add(subtask);
             int id = ++generatorId;
             subtask.setId(id);
+            sortedTasks.add(subtask);
             subtasks.put(id, subtask);
             epics.get(subtask.getEpicId()).getSubtaskId().add(id);
             updateStatusEpic(epics.get(subtask.getEpicId()));
@@ -77,8 +75,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task task) {
         if (tasks.containsKey(task.getId())) {
-            sortedTasks.remove(task);
             checkTimeTask(task);
+            sortedTasks.remove(tasks.get(task.getId()));
             tasks.put(task.getId(), task);
             sortedTasks.add(task);
         }
@@ -87,8 +85,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(Subtask subtask) {
         if (subtasks.containsKey(subtask.getId())) {
-            sortedTasks.remove(subtask);
             checkTimeTask(subtask);
+            sortedTasks.remove(subtasks.get(subtask.getId()));
             subtasks.put(subtask.getId(), subtask);
             updateStatusEpic((epics.get(subtasks.get(subtask.getId()).getEpicId())));
             sortedTasks.add(subtask);
@@ -382,12 +380,9 @@ public class InMemoryTaskManager implements TaskManager {
                 }
                 throw new CollisionTaskException("Новая задача " + task.getName() +
                         " совпадает по времени с " + sortedTask.getName());
-
             }
         }
     }
-
-
 }
 
 

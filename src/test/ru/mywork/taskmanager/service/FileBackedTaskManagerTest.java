@@ -1,7 +1,5 @@
 package ru.mywork.taskmanager.service;
 
-
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import ru.mywork.taskmanager.model.Epic;
@@ -42,23 +40,22 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         taskManager.addNewSubTask(subTask2);
         Epic epic2 = new Epic("epic1", "descr1");
         taskManager.addNewEpic(epic2);
-        Task task2 = new Task("task1", "descr1");
+        Task task2 = new Task("task2", "descr2");
         taskManager.addNewTask(task2);
         taskManager.getTaskById(1);
         taskManager.getEpicById(2);
         taskManager.getSubtaskById(3);
+
         FileBackedTaskManager fbk2 = FileBackedTaskManager.loadFromFile(file);
-        //assertEquals(taskManager.getHistory(), fbk2.getHistory(), "История задач не совпадает");
-        assertEquals(taskManager.getSortedTasks(), fbk2.getSortedTasks(),
-                "Сортированные задачи не совпадают");
         assertEquals(taskManager.getTasks(), fbk2.getTasks(),
                 "Список задач после выгрузки не совпадает");
         assertEquals(taskManager.getSubtasks(), fbk2.getSubtasks(),
                 "Список подзадач после выгрузки не совпадает");
         assertEquals(taskManager.getEpics(), fbk2.getEpics(),
                 "Список эпиков после выгрузки не совпадает");
-
-
+        assertEquals(taskManager.getHistory(), fbk2.getHistory(), "История задач не совпадает");
+        assertEquals(taskManager.getSortedTasks(), fbk2.getSortedTasks(),
+                "Сортированные задачи не совпадают");
         assertNotNull(fbk2, "Не загружен");
     }
 }

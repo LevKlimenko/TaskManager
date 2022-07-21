@@ -79,7 +79,6 @@ public class Task {
         return sb.toString();
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -142,7 +141,7 @@ public class Task {
             endTime = null;
         } else {
             endTime = getStartTime().plusMinutes(duration);
-           }
+        }
         return endTime;
     }
 

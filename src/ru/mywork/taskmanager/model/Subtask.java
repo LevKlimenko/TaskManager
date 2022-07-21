@@ -81,7 +81,6 @@ public class Subtask extends Task {
         return Objects.hash(super.hashCode(), epicId);
     }
 
-
     public int getEpicId() {
         return epicId;
     }
