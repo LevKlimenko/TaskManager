@@ -20,6 +20,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.file = file;
     }
 
+
     static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager load = new FileBackedTaskManager(file);
         load.loadDataFromFile(String.valueOf(file));
