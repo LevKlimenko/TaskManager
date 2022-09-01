@@ -35,5 +35,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="gson-2.9.0" level="project" />
+    <orderEntry type="library" name="apiguardian-api-1.0.0-javadoc" level="project" />
   </component>
 </module>
