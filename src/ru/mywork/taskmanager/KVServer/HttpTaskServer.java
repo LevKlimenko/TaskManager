@@ -6,7 +6,6 @@ import com.sun.net.httpserver.HttpServer;
 import ru.mywork.taskmanager.model.Epic;
 import ru.mywork.taskmanager.model.Subtask;
 import ru.mywork.taskmanager.model.Task;
-import ru.mywork.taskmanager.service.FileBackedTaskManager;
 import ru.mywork.taskmanager.service.Managers;
 import ru.mywork.taskmanager.service.TaskManager;
 
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -23,10 +21,10 @@ import java.util.List;
 public class HttpTaskServer {
 
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    private static String hostName = "localhost";
+    private static final String HOST_NAME = "localhost";
     public static int PORT = 8080;
-    private final HttpServer server;
-    private static FileBackedTaskManager fbtm = Managers.getFileBackedTaskManager();
+    private final HttpServer httpServer;
+   // private static FileBackedTaskManager fbtm = Managers.getFileBackedTaskManager();
     private static Gson gson;
     private final TaskManager taskManager;
 
@@ -37,12 +35,12 @@ public class HttpTaskServer {
     public HttpTaskServer(TaskManager taskManager) throws IOException {
         this.taskManager = taskManager;
         gson = Managers.getGson();
-        server = HttpServer.create(new InetSocketAddress(hostName,8080), 0);
-        server.createContext("/tasks", this::handler);
+        httpServer = HttpServer.create(new InetSocketAddress(HOST_NAME,8080), 0);
+        httpServer.createContext("/tasks", this::handler);
         }
 
-    public void main(String[] args) throws IOException {
-       final HttpTaskServer server = new HttpTaskServer();
+    public static void main(String[] args) throws IOException {
+       final HttpTaskServer server = new HttpTaskServer(Managers.getDefault());
        server.start();
     }
 
@@ -57,7 +55,7 @@ public class HttpTaskServer {
                         System.out.println("/ Ждёт GET-запрос, а получил: " + httpExchange.getRequestMethod());
                         httpExchange.sendResponseHeaders(405, 0);
                     }
-                    final String response = gson.toJson(fbtm.getSortedTasks());
+                    final String response = gson.toJson(taskManager.getSortedTasks());
                     sendText(httpExchange, response);
                 }
                 case "task":
@@ -73,7 +71,7 @@ public class HttpTaskServer {
                         System.out.println("/history Ждёт GET-запрос, а получил: " + httpExchange.getRequestMethod());
                         httpExchange.sendResponseHeaders(405, 0);
                     }
-                    final String response = gson.toJson(fbtm.getHistory());
+                    final String response = gson.toJson(taskManager.getHistory());
                     sendText(httpExchange, response);
                 }
                 default: {
@@ -93,7 +91,7 @@ public class HttpTaskServer {
         switch (httpExchange.getRequestMethod()) {
             case "GET": {
                 if (query == null) {
-                    final HashMap<Integer, Task> tasks = fbtm.getTasks();
+                    final HashMap<Integer, Task> tasks = taskManager.getTasks();
                     final String response = gson.toJson(tasks);
                     System.out.println("Получили все задачи");
                     sendText(httpExchange, response);
@@ -101,7 +99,7 @@ public class HttpTaskServer {
                 }
                 String idParam = query.substring(3); //?id=
                 final int id = Integer.parseInt(idParam);
-                final Task task = fbtm.getTaskById(id);
+                final Task task = taskManager.getTaskById(id);
                 final String response = gson.toJson(task);
                 System.out.println("Получили задачу id=" + id);
                 sendText(httpExchange, response);
@@ -109,14 +107,14 @@ public class HttpTaskServer {
             break;
             case "DELETE": {
                 if (query == null) {
-                    fbtm.clearTask();
+                    taskManager.clearTask();
                     System.out.println("Удалили все задачи");
                     httpExchange.sendResponseHeaders(200, 0);
                     return;
                 }
                 String idParam = query.substring(3);
                 final int id = Integer.parseInt(idParam);
-                fbtm.deleteTaskById(id);
+                taskManager.deleteTaskById(id);
                 System.out.println("Удалили задачу id=" + id);
                 httpExchange.sendResponseHeaders(200, 0);
             }
@@ -131,11 +129,11 @@ public class HttpTaskServer {
                 final Task task = gson.fromJson(json, Task.class);
                 final Integer id = task.getId();
                 if (id != null) {
-                    fbtm.updateTask(task);
+                    taskManager.updateTask(task);
                     System.out.println("Обновили задачу id=" + id);
                     httpExchange.sendResponseHeaders(200, 0);
                 } else {
-                    fbtm.addNewTask(task);
+                    taskManager.addNewTask(task);
                     System.out.println("Добавлена новая задача id=" + id);
                     final String response = gson.toJson(task);
                     sendText(httpExchange, response);
@@ -153,7 +151,7 @@ public class HttpTaskServer {
         switch (httpExchange.getRequestMethod()) {
             case "GET": {
                 if (query == null) {
-                    final HashMap<Integer, Epic> epics = fbtm.getEpics();
+                    final HashMap<Integer, Epic> epics = taskManager.getEpics();
                     final String response = gson.toJson(epics);
                     System.out.println("Получили все Эпики");
                     sendText(httpExchange, response);
@@ -161,7 +159,7 @@ public class HttpTaskServer {
                 }
                 String idParam = query.substring(3); //?id=
                 final int id = Integer.parseInt(idParam);
-                final Epic epic = fbtm.getEpicById(id);
+                final Epic epic = taskManager.getEpicById(id);
                 final String response = gson.toJson(epic);
                 System.out.println("Получили Эпик id=" + id);
                 sendText(httpExchange, response);
@@ -169,14 +167,14 @@ public class HttpTaskServer {
             break;
             case "DELETE": {
                 if (query == null) {
-                    fbtm.clearEpic();
+                    taskManager.clearEpic();
                     System.out.println("Удалили все Эпики");
                     httpExchange.sendResponseHeaders(200, 0);
                     return;
                 }
                 String idParam = query.substring(3);
                 final int id = Integer.parseInt(idParam);
-                fbtm.deleteEpicById(id);
+                taskManager.deleteEpicById(id);
                 System.out.println("Удалили Эпик id=" + id);
                 httpExchange.sendResponseHeaders(200, 0);
             }
@@ -191,11 +189,11 @@ public class HttpTaskServer {
                 final Epic epic = gson.fromJson(json, Epic.class);
                 final Integer id = epic.getId();
                 if (id != null) {
-                    fbtm.updateEpic(epic);
+                    taskManager.updateEpic(epic);
                     System.out.println("Обновили Эпик id=" + id);
                     httpExchange.sendResponseHeaders(200, 0);
                 } else {
-                    fbtm.addNewEpic(epic);
+                    taskManager.addNewEpic(epic);
                     System.out.println("Добавлен новый Эпик id=" + id);
                     final String response = gson.toJson(epic);
                     sendText(httpExchange, response);
@@ -213,7 +211,7 @@ public class HttpTaskServer {
         switch (httpExchange.getRequestMethod()) {
             case "GET": {
                 if (query == null) {
-                    final HashMap<Integer, Subtask> subtasks = fbtm.getSubtasks();
+                    final HashMap<Integer, Subtask> subtasks = taskManager.getSubtasks();
                     final String response = gson.toJson(subtasks);
                     System.out.println("Получили все Сабтаски");
                     sendText(httpExchange, response);
@@ -221,7 +219,7 @@ public class HttpTaskServer {
                 }
                 String idParam = query.substring(3); //?id=
                 final int id = Integer.parseInt(idParam);
-                final Subtask subtask = fbtm.getSubtaskById(id);
+                final Subtask subtask = taskManager.getSubtaskById(id);
                 final String response = gson.toJson(subtask);
                 System.out.println("Получили Сабтаск id=" + id);
                 sendText(httpExchange, response);
@@ -229,14 +227,14 @@ public class HttpTaskServer {
             break;
             case "DELETE": {
                 if (query == null) {
-                    fbtm.clearSubtask();
+                    taskManager.clearSubtask();
                     System.out.println("Удалили все Сабтаски");
                     httpExchange.sendResponseHeaders(200, 0);
                     return;
                 }
                 String idParam = query.substring(3);
                 final int id = Integer.parseInt(idParam);
-                fbtm.deleteSubtaskById(id);
+                taskManager.deleteSubtaskById(id);
                 System.out.println("Удалили Сабтаск id=" + id);
                 httpExchange.sendResponseHeaders(200, 0);
             }
@@ -251,11 +249,11 @@ public class HttpTaskServer {
                 final Subtask subtask = gson.fromJson(json, Subtask.class);
                 final Integer id = subtask.getId();
                 if (id != null) {
-                    fbtm.updateSubtask(subtask);
+                    taskManager.updateSubtask(subtask);
                     System.out.println("Обновили Сабтаск id=" + id);
                     httpExchange.sendResponseHeaders(200, 0);
                 } else {
-                    fbtm.addNewSubTask(subtask);
+                    taskManager.addNewSubTask(subtask);
                     System.out.println("Добавлен новый Сабтаск id=" + id);
                     final String response = gson.toJson(subtask);
                     sendText(httpExchange, response);
@@ -273,7 +271,7 @@ public class HttpTaskServer {
         if (httpExchange.getRequestMethod().equals("GET")) {
             String idParam = query.substring(3); //?id=
             final int id = Integer.parseInt(idParam);
-            final List<Subtask> subtaskByEpicId = fbtm.getSubtaskByEpicId(id);
+            final List<Subtask> subtaskByEpicId = taskManager.getSubtaskByEpicId(id);
             final String response = gson.toJson(subtaskByEpicId);
             System.out.println("Получили все Сабтаски у EpicId=" + id);
             sendText(httpExchange, response);
@@ -299,11 +297,12 @@ public class HttpTaskServer {
     public void start(){
         System.out.println("Запускаем сервер на порту " + PORT);
         System.out.println("Открой в браузере http://localhost:" + PORT + "/");
-        server.start();
+        httpServer.start();
     }
 
     public void stop(){
-        server.stop(0);
+        httpServer.stop(0);
+        System.out.println("Сервер остановлен на порту " + PORT);
     }
 }
 

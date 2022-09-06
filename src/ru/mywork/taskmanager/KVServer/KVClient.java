@@ -26,7 +26,7 @@ public class KVClient {
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
-                throw (new ManagerSaveException("Невозможно выполнить запрос, код статуса: " + response.statusCode()));
+                throw new ManagerSaveException("Невозможно выполнить запрос, код статуса: " + response.statusCode());
             }
             return response.body();
         } catch (IOException | InterruptedException e) {

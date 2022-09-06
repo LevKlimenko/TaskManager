@@ -27,7 +27,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return load;
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
 
         FileBackedTaskManager manager = new FileBackedTaskManager(new File("tasks.csv"));
         Task task1 = new Task("Купить корм кошке", "Магазин Лапки", Status.DONE);
@@ -68,7 +68,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         // managers.printById(6);
         //   managers.printById(7);
         //managers.printById(2);
-    }
+    }*/
 
     private String historyToString(HistoryManager manager) {
         StringBuilder sb = new StringBuilder();
@@ -113,7 +113,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         System.out.println("----Конец----");
     }
 
-    private void save() {
+    protected void save() {
         try (FileWriter fw = new FileWriter(file, false)) {
             fw.write(TABLE_HEADER);
             for (Task task : getTasks().values()) {

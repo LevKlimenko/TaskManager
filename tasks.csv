@@ -1,8 +1,0 @@
-id,type,name,description,status,epic,startTime,duration
-1,TASK,Купить корм кошке,Магазин Лапки,DONE,null,0
-2,EPIC,Уборка,Убраться в квартире,DONE,2022-03-03T12:25,10
-3,SUBTASK,Пропылесосить,Кухня и комната,DONE,2,2022-03-03T12:25,10
-4,SUBTASK,Мусор,Выкинуть мусор,DONE,2,null,0
-5,SUBTASK,Посуда,Помыть посуду,DONE,2,null,0
-
-3,1,2

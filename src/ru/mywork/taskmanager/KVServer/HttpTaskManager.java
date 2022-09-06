@@ -81,7 +81,8 @@ public class HttpTaskManager extends FileBackedTaskManager {
         }
     }
 
-    private void save(){
+    @Override
+    protected void save(){
         String jsonTasks = gson.toJson(new ArrayList<>(tasks.values()));
         client.put("tasks", jsonTasks);
         String jsonSubtasks = gson.toJson(new ArrayList<>(subtasks.values()));

@@ -1,21 +1,16 @@
 package ru.mywork.taskmanager.KVServer;
 
 import com.google.gson.Gson;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import ru.mywork.taskmanager.model.Epic;
 import ru.mywork.taskmanager.model.Subtask;
 import ru.mywork.taskmanager.model.Task;
-import ru.mywork.taskmanager.service.FileBackedTaskManager;
 import ru.mywork.taskmanager.service.Managers;
 import ru.mywork.taskmanager.service.TaskManager;
 
 import java.time.LocalDateTime;
-
-import static org.junit.Assert.*;
 public class HttpTaskServerTest {
     private HttpTaskServer server;
     private HttpTaskManager httpTaskManager;
