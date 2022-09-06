@@ -8,6 +8,7 @@ import ru.mywork.taskmanager.model.Subtask;
 import ru.mywork.taskmanager.model.Task;
 import ru.mywork.taskmanager.service.FileBackedTaskManager;
 import ru.mywork.taskmanager.service.Managers;
+import ru.mywork.taskmanager.service.TaskManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,14 +24,27 @@ public class HttpTaskServer {
 
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private static String hostName;
-    private static int port;
+    public static int PORT = 8080;
+    private final HttpServer server;
     private static FileBackedTaskManager fbtm = Managers.getFileBackedTaskManager();
-    private static Gson gson = Managers.getGson();
+    private static Gson gson;
+    private final TaskManager taskManager;
 
+    public HttpTaskServer() throws IOException{
+        this(Managers.getDefault());
+    }
+
+    public HttpTaskServer(TaskManager taskManager) throws IOException {
+        this.taskManager = taskManager;
+        gson = Managers.getGson();
+        server = HttpServer.create(new InetSocketAddress("localhost",8080), 0);
+        server.createContext("/tasks", this::handler);
+        }
 
     public void main(String[] args) throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
-        server.createContext("/tasks", this::handler);
+       final HttpTaskServer server = new HttpTaskServer();
+       server.start();
+
     }
 
 
@@ -283,6 +297,14 @@ public class HttpTaskServer {
         httpExchange.sendResponseHeaders(201, 0);
         return new String(is.readAllBytes(), DEFAULT_CHARSET);
     }
+    public void start(){
+        System.out.println("Запускаем сервер на порту " + PORT);
+        System.out.println("Открой в браузере http://localhost:" + PORT + "/");
+        server.start();
+    }
 
+    public void stop(){
+        server.stop(0);
+    }
 }
 
