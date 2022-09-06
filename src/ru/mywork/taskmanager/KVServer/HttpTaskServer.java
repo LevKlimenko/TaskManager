@@ -23,7 +23,7 @@ import java.util.List;
 public class HttpTaskServer {
 
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    private static String hostName;
+    private static String hostName = "localhost";
     public static int PORT = 8080;
     private final HttpServer server;
     private static FileBackedTaskManager fbtm = Managers.getFileBackedTaskManager();
@@ -37,14 +37,13 @@ public class HttpTaskServer {
     public HttpTaskServer(TaskManager taskManager) throws IOException {
         this.taskManager = taskManager;
         gson = Managers.getGson();
-        server = HttpServer.create(new InetSocketAddress("localhost",8080), 0);
+        server = HttpServer.create(new InetSocketAddress(hostName,8080), 0);
         server.createContext("/tasks", this::handler);
         }
 
     public void main(String[] args) throws IOException {
        final HttpTaskServer server = new HttpTaskServer();
        server.start();
-
     }
 
 
