@@ -31,7 +31,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         return 0;
     });
-    private int generatorId = 0;
+    protected int generatorId = 0;
 
     @Override
     public int getGeneratorId() {
