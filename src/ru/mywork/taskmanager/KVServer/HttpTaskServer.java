@@ -47,7 +47,7 @@ public class HttpTaskServer {
     }
 
 
-    public void handler(HttpExchange httpExchange) {
+    private void handler(HttpExchange httpExchange) {
         try {
             System.out.println("\n/tasks: " + httpExchange.getRequestURI());
             final String path = httpExchange.getRequestURI().getPath().substring(7);
