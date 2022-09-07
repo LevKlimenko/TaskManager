@@ -82,20 +82,20 @@ public class HttpTaskManager extends FileBackedTaskManager {
     }
 
     @Override
-    protected void save(){
+    protected void save() {
         String jsonTasks = gson.toJson(new ArrayList<>(tasks.values()));
         client.put("tasks", jsonTasks);
         String jsonSubtasks = gson.toJson(new ArrayList<>(subtasks.values()));
-        client.put("subtasks",jsonSubtasks);
+        client.put("subtasks", jsonSubtasks);
         String jsonEpics = gson.toJson(new ArrayList<>(epics.values()));
-        client.put("epics",jsonEpics);
+        client.put("epics", jsonEpics);
 
         String jsonHistory = gson.toJson(historyManager.getHistory().stream().map(Task::getId)
                 .collect(Collectors.toList()));
         client.put("history", jsonHistory);
     }
 
-    public int getGeneratorId(){
+    public int getGeneratorId() {
         return generatorId;
     }
 }

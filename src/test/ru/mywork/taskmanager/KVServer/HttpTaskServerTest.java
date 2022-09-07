@@ -1,17 +1,30 @@
 package ru.mywork.taskmanager.KVServer;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions.*;
 import ru.mywork.taskmanager.model.Epic;
 import ru.mywork.taskmanager.model.Subtask;
 import ru.mywork.taskmanager.model.Task;
 import ru.mywork.taskmanager.service.Managers;
 import ru.mywork.taskmanager.service.TaskManager;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class HttpTaskServerTest {
+
     private HttpTaskServer server;
     private HttpTaskManager httpTaskManager;
     private TaskManager taskManager;
@@ -21,7 +34,7 @@ public class HttpTaskServerTest {
     private Epic epic;
 
     private Gson gson = Managers.getGson();
-    KVServer kvServer;
+    private KVServer kvServer;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -48,6 +61,16 @@ public class HttpTaskServerTest {
     }
 
     @Test
-    public void handler() {
+    public void GetTask() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("localhost:8080/tasks/");
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(url)
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request,HttpResponse.BodyHandlers.ofString());
+       assertEquals(200 ,response.statusCode());
+
+
     }
 }

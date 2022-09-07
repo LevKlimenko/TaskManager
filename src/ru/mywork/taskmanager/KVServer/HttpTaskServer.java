@@ -23,25 +23,24 @@ public class HttpTaskServer {
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private static final String HOST_NAME = "localhost";
     public static int PORT = 8080;
-    private final HttpServer httpServer;
-   // private static FileBackedTaskManager fbtm = Managers.getFileBackedTaskManager();
     private static Gson gson;
+    private final HttpServer httpServer;
     private final TaskManager taskManager;
 
-    public HttpTaskServer() throws IOException{
+    public HttpTaskServer() throws IOException {
         this(Managers.getDefault());
     }
 
     public HttpTaskServer(TaskManager taskManager) throws IOException {
         this.taskManager = taskManager;
         gson = Managers.getGson();
-        httpServer = HttpServer.create(new InetSocketAddress(HOST_NAME,8080), 0);
+        httpServer = HttpServer.create(new InetSocketAddress(HOST_NAME, 8080), 0);
         httpServer.createContext("/tasks", this::handler);
-        }
+    }
 
     public static void main(String[] args) throws IOException {
-       final HttpTaskServer server = new HttpTaskServer(Managers.getDefault());
-       server.start();
+        final HttpTaskServer server = new HttpTaskServer(Managers.getDefault());
+        server.start();
     }
 
 
@@ -58,14 +57,19 @@ public class HttpTaskServer {
                     final String response = gson.toJson(taskManager.getSortedTasks());
                     sendText(httpExchange, response);
                 }
+                break;
                 case "task":
                     handleTask(httpExchange);
+                    break;
                 case "subtask":
                     handleSubtask(httpExchange);
+                    break;
                 case "subtask/epic":
                     handleSubtasksByEpic(httpExchange);
+                    break;
                 case "epic":
                     handleEpic(httpExchange);
+                    break;
                 case "history": {
                     if (!httpExchange.getRequestMethod().equals("GET")) {
                         System.out.println("/history Ждёт GET-запрос, а получил: " + httpExchange.getRequestMethod());
@@ -97,7 +101,7 @@ public class HttpTaskServer {
                     sendText(httpExchange, response);
                     return;
                 }
-                String idParam = query.substring(3); //?id=
+                String idParam = query.substring(9); //?id=
                 final int id = Integer.parseInt(idParam);
                 final Task task = taskManager.getTaskById(id);
                 final String response = gson.toJson(task);
@@ -294,13 +298,14 @@ public class HttpTaskServer {
         httpExchange.sendResponseHeaders(201, 0);
         return new String(is.readAllBytes(), DEFAULT_CHARSET);
     }
-    public void start(){
-        System.out.println("Запускаем сервер на порту " + PORT);
+
+    public void start() {
+        System.out.println("Запускаем HttpTaskServer на порту " + PORT);
         System.out.println("Открой в браузере http://localhost:" + PORT + "/");
         httpServer.start();
     }
 
-    public void stop(){
+    public void stop() {
         httpServer.stop(0);
         System.out.println("Сервер остановлен на порту " + PORT);
     }

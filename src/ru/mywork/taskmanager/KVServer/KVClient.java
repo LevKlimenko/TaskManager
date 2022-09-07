@@ -51,7 +51,7 @@ public class KVClient {
         }
     }
 
-    public String put(String key,String value) {
+    public String put(String key, String value) {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
@@ -67,7 +67,6 @@ public class KVClient {
             throw new ManagerSaveException("Невозможно выполнить запрос " + e.getMessage());
         }
     }
-
 
 
 }
