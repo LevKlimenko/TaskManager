@@ -321,7 +321,7 @@ public class HttpTaskServer {
 
     private String readText(HttpExchange httpExchange) throws IOException {
         InputStream is = httpExchange.getRequestBody();
-        httpExchange.sendResponseHeaders(201, 0);
+       // httpExchange.sendResponseHeaders(201, 0);
         return new String(is.readAllBytes(), DEFAULT_CHARSET);
     }
 
