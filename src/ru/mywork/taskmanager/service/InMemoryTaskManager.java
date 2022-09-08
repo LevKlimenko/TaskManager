@@ -378,6 +378,8 @@ public class InMemoryTaskManager implements TaskManager {
                 if (!task.getEndTime().isAfter(sortedTask.getStartTime())) {
                     continue;
                 }
+                System.out.println("Новая задача " + task.getName() +
+                        " совпадает по времени с " + sortedTask.getName());//для консольного вывода с сервером
                 throw new CollisionTaskException("Новая задача " + task.getName() +
                         " совпадает по времени с " + sortedTask.getName());
             }
