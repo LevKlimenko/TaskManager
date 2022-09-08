@@ -149,14 +149,6 @@ public class HttpTaskServer {
             }
             break;
             case "POST": {
-               /* InputStream is = httpExchange.getRequestBody();
-                String jsonString = new String(is.readAllBytes(),StandardCharsets.UTF_8);
-                JsonElement jsonElement = JsonParser.parseString(jsonString);
-                if (!jsonElement.isJsonObject()){
-                    throw new CollisionTaskException(jsonString);
-                }
-                JsonObject jsonObject = jsonElement.getAsJsonObject();
-                Task task = gson.fromJson(jsonObject,Task.class);*/
                 String json = readText(httpExchange);
                 if (json.isEmpty()) {
                     System.out.println("Body с задачей пустой. Указывается в теле запроса");
@@ -172,9 +164,9 @@ public class HttpTaskServer {
                 } else {
                     taskManager.addNewTask(task);
                     System.out.println("Добавлена новая задача id=" + task.getId());
-                    final String response = gson.toJson(task);
-                    sendText(httpExchange, response);
-                    httpExchange.sendResponseHeaders(200,0);
+                    //final String response = gson.toJson(task);
+                    httpExchange.sendResponseHeaders(201,0);
+                    //sendText(httpExchange, response);
                 }
             }
             break;
@@ -183,39 +175,6 @@ public class HttpTaskServer {
                 httpExchange.sendResponseHeaders(405, 0);
         }
     }
-
-/*
-    private void handleTask(HttpExchange httpExchange) throws  IOException{
-        String requestMethod = httpExchange.getRequestMethod();
-        URI requestURI = httpExchange.getRequestURI();
-        String requestURIStr = requestURI.toString();
-        String query = requestURI.getQuery();
-        Map<String,String> params = queryToMap(query);
-        try{
-            switch (requestMethod){
-                case "GET":
-                    String response;
-                    if (requestURIStr.equals("/tasks/task")){
-                        response = gson.toJson(taskManager.getTasks());
-                    }
-                    else if (params.size()==1){
-                        if(params.containsKey("id")){
-                            int id = Integer.parseInt(params.get("id"));
-                            if (requestURIStr.equals(String.format("/tasks/task/?id=",id))){
-                                response = gson.toJson(taskManager.getTaskById(id));
-                            }
-                        }httpExchange.sendResponseHeaders(200,0);
-                        try(OutputStream os = httpExchange.getResponseBody()){
-                            os.write(response.getBytes());
-                    }
-
-                    }
-            }
-        }
-    }
-*/
-
-
 
     private void handleEpic(HttpExchange httpExchange) throws IOException {
         final String query = httpExchange.getRequestURI().getQuery();
