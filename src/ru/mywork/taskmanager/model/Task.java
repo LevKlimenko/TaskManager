@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class Task {
 
-    static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss.ms");
+    static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
     protected String name;
     protected String description;
     protected int id;

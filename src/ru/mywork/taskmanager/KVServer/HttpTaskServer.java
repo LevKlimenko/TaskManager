@@ -174,6 +174,7 @@ public class HttpTaskServer {
                     System.out.println("Добавлена новая задача id=" + task.getId());
                     final String response = gson.toJson(task);
                     sendText(httpExchange, response);
+                    httpExchange.sendResponseHeaders(200,0);
                 }
             }
             break;

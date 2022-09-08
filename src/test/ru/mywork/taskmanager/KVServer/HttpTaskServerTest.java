@@ -39,7 +39,7 @@ public class HttpTaskServerTest {
     @BeforeEach
     public void setUp() throws Exception {
         taskManager=Managers.getDefault();
-        server = new HttpTaskServer();
+       //server = new HttpTaskServer();
         task = new Task("TaskTest","Task1descr",
                 LocalDateTime.of(2022,9,6,13,0),10);
         taskManager.addNewTask(task);
@@ -63,13 +63,13 @@ public class HttpTaskServerTest {
     @Test
     public void GetTask() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("localhost:8080/tasks/");
+        URI url = URI.create("localhost:8080/tasks/task/");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request,HttpResponse.BodyHandlers.ofString());
-       assertEquals(200 ,response.statusCode());
+       assertEquals(200 ,response.statusCode(),"ошибка");
 
 
     }
