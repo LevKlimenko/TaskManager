@@ -51,7 +51,7 @@ public class HttpTaskManager extends FileBackedTaskManager {
         }
     }
 
-    private void load() {
+    public void load() {
         ArrayList<Task> tasks = gson.fromJson(client.load("tasks"), new TypeToken<ArrayList<Task>>() {
         }.getType());
         addTasks(tasks);
@@ -82,7 +82,7 @@ public class HttpTaskManager extends FileBackedTaskManager {
     }
 
     @Override
-    protected void save() {
+    public void save() {
         String jsonTasks = gson.toJson(new ArrayList<>(tasks.values()));
         client.put("tasks", jsonTasks);
         String jsonSubtasks = gson.toJson(new ArrayList<>(subtasks.values()));

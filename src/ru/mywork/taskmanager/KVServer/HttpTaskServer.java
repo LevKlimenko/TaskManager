@@ -360,9 +360,8 @@ public class HttpTaskServer {
         taskManager.addNewTask(task);
         Gson gson = Managers.getGson();
         String jsString = gson.toJson(task);
-        LocalDateTime timeEnd = task.getEndTime();
-        System.out.println(jsString);
-        System.out.println(task.getTimeInFormat(timeEnd));*/
+        System.out.println(jsString);*/
+
     }
 
     public void stop() {
