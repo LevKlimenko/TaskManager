@@ -18,7 +18,7 @@ public class Task {
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
-        //this.status = Status.NEW;
+        status = Status.NEW;
         this.startTime = null;
         this.duration = 0;
     }
@@ -76,6 +76,7 @@ public class Task {
         sb.append(",").append(getStatus());
         sb.append(",").append(getStartTime());
         sb.append(",").append(getDuration());
+
         return sb.toString();
     }
 
@@ -144,6 +145,11 @@ public class Task {
         }
         return endTime;
     }
+
+    public String getTimeInFormat(LocalDateTime endtime){
+        return endtime.format(formatter);
+    }
+
 
     public int getDuration() {
         return duration;

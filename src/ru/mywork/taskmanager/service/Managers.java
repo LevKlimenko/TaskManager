@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class Managers {
 
 
-    public static TaskManager getDefault() throws IOException { getDefaultKVServer();
+    public static TaskManager getDefault() throws IOException {
         return new HttpTaskManager(KVServer.PORT);}
 
     public static KVServer getDefaultKVServer() throws IOException{
