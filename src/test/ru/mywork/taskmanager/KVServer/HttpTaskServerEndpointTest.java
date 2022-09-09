@@ -90,14 +90,11 @@ public class HttpTaskServerEndpointTest {
         HttpResponse<String> response = client.send(request,handler);
         assertEquals(200, response.statusCode());
         Type type = new TypeToken<HashMap<Integer,Task>>(){
-
         }.getType();
       HashMap<Integer,Task>actual = gson.fromJson(response.body(),type);
      assertNotNull(actual, "Задачи не возвращаются");
      assertEquals(1, actual.size(), "Неверное количество задач");
      assertEquals(task, actual.get(1), "Задачи не совпадают");
-
-
     }
 
 }
