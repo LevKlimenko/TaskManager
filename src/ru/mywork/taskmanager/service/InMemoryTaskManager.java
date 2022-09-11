@@ -67,9 +67,9 @@ public class InMemoryTaskManager implements TaskManager {
             checkTimeTask(subtask);
             int id = ++generatorId;
             subtask.setId(id);
-            sortedTasks.add(subtask);
             subtasks.put(id, subtask);
-            epics.get(subtask.getEpicId()).getSubtaskId().add(id);
+            sortedTasks.add(subtask);
+            epics.get(subtask.getEpicId()).addSubtaskId(id);
             updateStatusEpic(epics.get(subtask.getEpicId()));
             setEpicStartAndEndTime(epics.get(subtask.getEpicId()));
         }

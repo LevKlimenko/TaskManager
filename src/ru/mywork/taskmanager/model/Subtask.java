@@ -9,6 +9,7 @@ public class Subtask extends Task {
 
     public Subtask(String name, String description, int epicId) {
         super(name, description);
+        this.status = Status.NEW;
         this.epicId = epicId;
         this.startTime = null;
         this.duration = 0;
@@ -23,6 +24,7 @@ public class Subtask extends Task {
 
     public Subtask(String name, String description, int epicId, LocalDateTime localDateTime, int duration) {
         super(name, description, localDateTime, duration);
+        this.status = Status.NEW;
         this.epicId = epicId;
     }
 

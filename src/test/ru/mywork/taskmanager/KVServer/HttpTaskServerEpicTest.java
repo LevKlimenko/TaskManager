@@ -1,33 +1,17 @@
 package ru.mywork.taskmanager.KVServer;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import org.junit.After;
-//import org.junit.jupiter.api.After;
-import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions.*;
-import ru.mywork.taskmanager.errors.CollisionTaskException;
 import ru.mywork.taskmanager.model.Epic;
 import ru.mywork.taskmanager.model.Subtask;
 import ru.mywork.taskmanager.model.Task;
 import ru.mywork.taskmanager.service.Managers;
 import ru.mywork.taskmanager.service.TaskManager;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.mywork.taskmanager.model.Status.*;
-import static ru.mywork.taskmanager.model.Status.IN_PROGRESS;
 
 public class HttpTaskServerEpicTest {
 

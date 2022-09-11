@@ -1,12 +1,8 @@
 package ru.mywork.taskmanager.KVServer;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
-import ru.mywork.taskmanager.errors.CollisionTaskException;
 import ru.mywork.taskmanager.model.Epic;
 import ru.mywork.taskmanager.model.Subtask;
 import ru.mywork.taskmanager.model.Task;
@@ -17,14 +13,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Map;
 
 public class HttpTaskServer {
 
@@ -233,7 +225,7 @@ public class HttpTaskServer {
                     httpExchange.sendResponseHeaders(201, 0);
                 } else {
                     taskManager.addNewEpic(epic);
-                    System.out.println("Добавлен новый Эпик id=" + id);
+                    System.out.println("Добавлен новый Эпик id=" + epic.getId());
                     //final String response = gson.toJson(epic);
                     //sendText(httpExchange, response);
                     httpExchange.sendResponseHeaders(201, 0);
@@ -305,7 +297,7 @@ public class HttpTaskServer {
                     httpExchange.sendResponseHeaders(201, 0);
                 } else {
                     taskManager.addNewSubTask(subtask);
-                    System.out.println("Добавлен новый Сабтаск id=" + id);
+                    System.out.println("Добавлен новый Сабтаск id=" + subtask.getId());
                     //final String response = gson.toJson(subtask);
                     //sendText(httpExchange, response);
                     httpExchange.sendResponseHeaders(201,0);
@@ -356,11 +348,15 @@ public class HttpTaskServer {
         System.out.println("Запускаем HttpTaskServer на порту " + PORT);
         System.out.println("Открой в браузере http://localhost:" + PORT + "/");
         httpServer.start();
-        /*Task task = new Task("TestStatus", "TestStatusDescr", LocalDateTime.now(),10);
-        taskManager.addNewTask(task);
+        Epic epic = new Epic("test1","test1");
+        taskManager.addNewEpic(epic);
+        Subtask subtask1 = new Subtask("TestStatus", "TestStatusDescr", epic.getId());
+        taskManager.addNewSubTask(subtask1);
+        Subtask subtask2 = new Subtask("TestStatus", "TestStatusDescr", epic.getId());
+        taskManager.addNewSubTask(subtask2);
         Gson gson = Managers.getGson();
-        String jsString = gson.toJson(task);
-        System.out.println(jsString);*/
+        String jsString = gson.toJson(epic);
+        System.out.println(epic.getSubtaskId());
 
     }
 
