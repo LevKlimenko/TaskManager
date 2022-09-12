@@ -9,6 +9,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class KVClient {
+    private final HttpClient client = HttpClient.newHttpClient();
     private final String url;
     private final String apiToken;
 
@@ -19,7 +20,6 @@ public class KVClient {
 
     private String register(String url) {
         try {
-            HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url + "register"))
                     .GET()
@@ -36,7 +36,6 @@ public class KVClient {
 
     public String load(String key) {
         try {
-            HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url + "load/" + key + "?API_TOKEN=" + apiToken))
                     .GET()
@@ -53,7 +52,6 @@ public class KVClient {
 
     public String put(String key, String value) {
         try {
-            HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url + "save/" + key + "?API_TOKEN=" + apiToken))
                     .POST(HttpRequest.BodyPublishers.ofString(value))
@@ -66,6 +64,10 @@ public class KVClient {
         } catch (IOException | InterruptedException e) {
             throw new ManagerSaveException("Невозможно выполнить запрос " + e.getMessage());
         }
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public String getApiToken() {

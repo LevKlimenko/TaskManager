@@ -11,6 +11,7 @@ import ru.mywork.taskmanager.model.Status;
 import ru.mywork.taskmanager.model.Subtask;
 import ru.mywork.taskmanager.model.Task;
 import ru.mywork.taskmanager.service.FileBackedTaskManager;
+import ru.mywork.taskmanager.service.HttpTaskManager;
 import ru.mywork.taskmanager.service.Managers;
 import ru.mywork.taskmanager.service.TaskManager;
 

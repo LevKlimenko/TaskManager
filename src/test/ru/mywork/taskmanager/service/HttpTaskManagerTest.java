@@ -1,19 +1,17 @@
-package ru.mywork.taskmanager.KVServer;
+package ru.mywork.taskmanager.service;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.mywork.taskmanager.KVServer.KVServer;
 import ru.mywork.taskmanager.model.Task;
-import ru.mywork.taskmanager.service.Managers;
-import ru.mywork.taskmanager.service.TaskManager;
+import ru.mywork.taskmanager.service.HttpTaskManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
-
-import java.io.File;
 import java.io.IOException;
-import java.net.http.HttpClient;
+import java.security.Key;
 
 class HttpTaskManagerTest{
     private final KVServer server = new KVServer();
@@ -23,6 +21,7 @@ class HttpTaskManagerTest{
     //private KVClient client = new KVClient(8078);
 
 
+
     public HttpTaskManagerTest() throws IOException {
     }
 
@@ -30,6 +29,7 @@ class HttpTaskManagerTest{
     void setUp(){
         server.start();
         taskManager = new HttpTaskManager(8078);
+        key=taskManager.getKey();
 
     }
 
@@ -41,14 +41,11 @@ class HttpTaskManagerTest{
     @Test
     void shouldBeTestSaveEmptyTaskToServer(){
         taskManager.save();
+        HttpTaskManager restoredManager = HttpTaskManager.loadFromServer(8078, key);
+        assertEquals(taskManager,restoredManager,"Менеджеры не совпадает");
+        }
 
-        taskManager.load();
-           assertEquals(taskManager.getEpics().size(),0,"Количество эпиков не совпадает");
-        assertEquals(taskManager.getSubtasks().size(),0,"Количество Субтасков не совпадает");
-        assertEquals(taskManager.getTasks().size(),0,"Количество Тасков не совпадает");
-    }
-
-    @Test
+  /*  @Test
     void shouldBeTestOnlyTaskAddToServer(){
         Task task = new Task("TestTask","TestTaskDescr");
         taskManager.addNewTask(task);
@@ -57,5 +54,5 @@ class HttpTaskManagerTest{
         //assertEquals(1,taskManager.getGeneratorId(),"Номер генератора не совпадает");
        // assertEquals(1,taskManager.getTasks().size(),"Количество задач не совпадает");
         //assertEquals(1,task.getId(),"ID не совпадает");
-    }
+    }*/
 }

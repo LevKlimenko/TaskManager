@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
-    @Override
+   @Override
     InMemoryTaskManager createTaskManager() {
         return new InMemoryTaskManager();
-    }
+  }
 
     @Test
     public void shouldBeGetHistory() {

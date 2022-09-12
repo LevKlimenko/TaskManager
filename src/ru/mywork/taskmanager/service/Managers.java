@@ -3,7 +3,6 @@ package ru.mywork.taskmanager.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import ru.mywork.taskmanager.KVServer.HttpTaskManager;
 import ru.mywork.taskmanager.KVServer.KVServer;
 import ru.mywork.taskmanager.adapter.LocalDateTimeAdapter;
 

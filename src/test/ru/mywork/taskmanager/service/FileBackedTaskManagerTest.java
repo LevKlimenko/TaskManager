@@ -1,6 +1,8 @@
 package ru.mywork.taskmanager.service;
 
+import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.mywork.taskmanager.model.Epic;
 import ru.mywork.taskmanager.model.Subtask;
@@ -14,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     private File file;
 
-    @Override
+    @BeforeEach
     FileBackedTaskManager createTaskManager() {
         file = new File("test.csv");
         return new FileBackedTaskManager(file);

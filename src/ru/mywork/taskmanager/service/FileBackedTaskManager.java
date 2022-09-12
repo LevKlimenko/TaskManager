@@ -12,7 +12,7 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    private final static String TABLE_HEADER = "id,type,name,description,status,epic,startTime,duration\n";
+    protected final static String TABLE_HEADER = "id,type,name,description,status,epic,startTime,duration\n";
     private final File file;
 
 
@@ -70,7 +70,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         //managers.printById(2);
     }*/
 
-    private String historyToString(HistoryManager manager) {
+    protected String historyToString(HistoryManager manager) {
         StringBuilder sb = new StringBuilder();
         List<Task> history;
         history = getHistory();
@@ -83,7 +83,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return String.valueOf(sb);
     }
 
-    private void historyFromString(String value) {
+    protected void historyFromString(String value) {
         List<Integer> historyInt = new ArrayList<>();
         if (value.isEmpty()) {
             System.out.println("Передана пустая строка");
@@ -158,7 +158,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    private Task fromString(String value) {
+    protected Task fromString(String value) {
         String[] task = value.split(",");
         Task newTask = null;
         switch (TypeTask.valueOf(task[1])) {
@@ -192,7 +192,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return newTask;
     }
 
-    private void loadTask(Task task) {
+    protected void loadTask(Task task) {
         switch (task.getType()) {
             case TASK:
                 tasks.put(task.getId(), task);
