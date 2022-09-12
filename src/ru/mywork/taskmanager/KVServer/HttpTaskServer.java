@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -348,15 +349,17 @@ public class HttpTaskServer {
         System.out.println("Запускаем HttpTaskServer на порту " + PORT);
         System.out.println("Открой в браузере http://localhost:" + PORT + "/");
         httpServer.start();
-        Epic epic = new Epic("test1","test1");
+        /*Task task = new Task("TestTask", "TestTaskDisc",
+                LocalDateTime.of(2022,9,10,10,1,1),10);
+        taskManager.addNewTask(task);
+        Epic epic = new Epic("TestEpic","TestEpicDisc");
         taskManager.addNewEpic(epic);
-        Subtask subtask1 = new Subtask("TestStatus", "TestStatusDescr", epic.getId());
-        taskManager.addNewSubTask(subtask1);
-        Subtask subtask2 = new Subtask("TestStatus", "TestStatusDescr", epic.getId());
-        taskManager.addNewSubTask(subtask2);
-        Gson gson = Managers.getGson();
-        String jsString = gson.toJson(epic);
-        System.out.println(epic.getSubtaskId());
+        Subtask subtask = new Subtask("TestSubtask", "TestSubtaskDisc", epic.getId(),
+                LocalDateTime.of(2022,9,10,9,1,1),10);
+        taskManager.addNewSubTask(subtask);
+        taskManager.getEpicById(epic.getId());
+        taskManager.getTaskById(task.getId());
+        taskManager.getSubtaskById(subtask.getId());*/
 
     }
 

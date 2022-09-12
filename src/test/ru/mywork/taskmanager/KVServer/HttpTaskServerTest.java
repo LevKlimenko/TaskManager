@@ -1,6 +1,5 @@
 package ru.mywork.taskmanager.KVServer;
 
-import com.google.gson.Gson;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,13 +19,7 @@ import static ru.mywork.taskmanager.model.Status.*;
 public class HttpTaskServerTest {
 
     private HttpTaskServer server;
-    private HttpTaskManager httpTaskManager;
     private TaskManager taskManager;
-    private Task task;
-    private Subtask subtask;
-    private Subtask subtask2;
-    private Epic epic;
-    private Gson gson = Managers.getGson();
     private KVServer kvServer;
 
     @BeforeEach
@@ -47,7 +40,7 @@ public class HttpTaskServerTest {
 
     @Test
     public void shouldBeTestTask() throws IOException, InterruptedException {
-        task = new Task("TaskTest", "Task1descr", DONE,
+        Task task = new Task("TaskTest", "Task1descr", DONE,
                 LocalDateTime.of(2022, 9, 6, 13, 0), 10);
         taskManager.addNewTask(task);
         Task savedTask = taskManager.getTaskById(task.getId());

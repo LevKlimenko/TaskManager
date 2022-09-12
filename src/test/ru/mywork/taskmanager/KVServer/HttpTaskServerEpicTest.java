@@ -7,8 +7,12 @@ import org.junit.jupiter.api.Test;
 import ru.mywork.taskmanager.model.Epic;
 import ru.mywork.taskmanager.model.Subtask;
 import ru.mywork.taskmanager.model.Task;
+import ru.mywork.taskmanager.service.FileBackedTaskManager;
 import ru.mywork.taskmanager.service.Managers;
 import ru.mywork.taskmanager.service.TaskManager;
+
+import java.io.File;
+import java.net.http.HttpClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.mywork.taskmanager.model.Status.*;
@@ -16,27 +20,24 @@ import static ru.mywork.taskmanager.model.Status.*;
 public class HttpTaskServerEpicTest {
 
     private HttpTaskServer server;
-    private HttpTaskManager httpTaskManager;
     private TaskManager taskManager;
-    private Task task;
-    private Subtask subtask;
-    private Subtask subtask2;
     private Epic epic;
-    private Gson gson = Managers.getGson();
     private KVServer kvServer;
+    private HttpClient client;
 
     @BeforeEach
     public void setUp() throws Exception {
         kvServer = Managers.getDefaultKVServer();
-        server = new HttpTaskServer();
-        taskManager = new HttpTaskManager(8078);
+        taskManager = new FileBackedTaskManager(new File("test.csv"));
+        server = new HttpTaskServer(taskManager);
+        client = HttpClient.newHttpClient();
         server.start();
-        epic = new Epic("epic", "epic decr");
+        epic = new Epic("epic", "epic descr");
         taskManager.addNewEpic(epic);
     }
 
     @AfterEach
-    public void tearDown() throws Exception {
+    public void tearDown() {
         server.stop();
         kvServer.stop();
     }

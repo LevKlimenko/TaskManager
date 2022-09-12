@@ -22,7 +22,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,7 +44,7 @@ public class HttpTaskServerEndpointTest {
 
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         kvServer = Managers.getDefaultKVServer();
         taskManager = new FileBackedTaskManager(new File("test.csv"));
         server = new HttpTaskServer(taskManager);
@@ -62,7 +64,7 @@ public class HttpTaskServerEndpointTest {
     }
 
     @AfterEach
-    public void tearDown() throws Exception {
+    void tearDown() {
         server.stop();
         kvServer.stop();
     }
@@ -89,7 +91,28 @@ public class HttpTaskServerEndpointTest {
         assertEquals(task, actual.get(1), "Задачи не совпадают");
         assertEquals(task.getStatus(), actual.get(1).getStatus(), "Статус не совпадает");
         assertEquals(task.getStartTime(), actual.get(1).getStartTime(), "Время старта не совпадает");
+    }
 
+    @Test
+    public void shouldBeTestGetTaskByID() throws IOException, InterruptedException {
+        Task task = new Task("TestTask", "TestTaskDesc", Status.DONE,
+                LocalDateTime.of(2022, 9, 10, 10, 0, 0), 10);
+        taskManager.addNewTask(task);
+        int id = task.getId();
+        URI uriGet = URI.create("http://localhost:8080/tasks/task/?id=" + id);
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
+        HttpRequest request = requestBuilder
+                .GET()
+                .uri(uriGet)
+                .build();
+        HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
+        HttpResponse<String> response = client.send(request, handler);
+        assertEquals(200, response.statusCode());
+        Type type = new TypeToken<Task>() {
+        }.getType();
+        Task actual = gson.fromJson(response.body(), type);
+        assertNotNull(actual, "Задача не возвращаются");
+        assertEquals(task, actual, "Задачи не совпадают");
     }
 
     @Test
@@ -153,7 +176,6 @@ public class HttpTaskServerEndpointTest {
         assertEquals(0, actual.size(), "Количество задач неверное");
     }
 
-
     @Test
     public void shouldBeTestDeleteTaskByID() throws IOException, InterruptedException {
         Task task = new Task("TestTask", "TestTaskDesc");
@@ -169,9 +191,6 @@ public class HttpTaskServerEndpointTest {
         assertEquals(404, response.statusCode());
     }
 
-    /**
-     * обработка эпика
-     */
 
     @Test
     public void shouldBeTestGetEpic() throws IOException, InterruptedException {
@@ -193,7 +212,27 @@ public class HttpTaskServerEndpointTest {
         assertEquals(1, actual.size(), "Неверное количество эпиков");
         assertEquals(epic, actual.get(1), "Эпики не совпадают");
         assertEquals(epic.getStatus(), actual.get(1).getStatus(), "Статус не совпадает");
+    }
 
+    @Test
+    public void shouldBeTestGetEpicByID() throws IOException, InterruptedException {
+        Epic epic = new Epic("TestEpic", "TestEpicDesc");
+        taskManager.addNewEpic(epic);
+        int id = epic.getId();
+        URI uriGet = URI.create("http://localhost:8080/tasks/epic/?id=" + id);
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
+        HttpRequest request = requestBuilder
+                .GET()
+                .uri(uriGet)
+                .build();
+        HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
+        HttpResponse<String> response = client.send(request, handler);
+        assertEquals(200, response.statusCode());
+        Type type = new TypeToken<Epic>() {
+        }.getType();
+        Epic actual = gson.fromJson(response.body(), type);
+        assertNotNull(actual, "Эпик не возвращаются");
+        assertEquals(epic, actual, "Эпики не совпадают");
     }
 
     @Test
@@ -209,7 +248,6 @@ public class HttpTaskServerEndpointTest {
         assertEquals(201, response.statusCode());
         HashMap<Integer, Epic> epics = taskManager.getEpics();
         assertEquals(1, epics.size(), "Неверное число Эпиков");
-
     }
 
     @Test
@@ -268,10 +306,6 @@ public class HttpTaskServerEndpointTest {
         assertEquals(404, response.statusCode());
     }
 
-    /**
-     * обработка субтаска
-     */
-
     @Test
     public void shouldBeTestGetSubtask() throws IOException, InterruptedException {
         Epic epic = new Epic("TestEpic", "TestEpicDesc");
@@ -296,8 +330,31 @@ public class HttpTaskServerEndpointTest {
         assertEquals(subtask, actual.get(id), "Субтаски не совпадают");
         assertEquals(subtask.getStatus(), actual.get(id).getStatus(), "Статус субтасков не совпадает");
         assertEquals(actual.get(id).getStatus(), epic.getStatus(), "Статус эпиков не поменялся");
-
     }
+
+    @Test
+    public void shouldBeTestGetSubtaskByID() throws IOException, InterruptedException {
+        Epic epic = new Epic("TestEpic", "TestEpicDesc");
+        taskManager.addNewEpic(epic);
+        Subtask subtask = new Subtask("TestSubtask", "TestSubtaskDisc", epic.getId(), Status.DONE);
+        taskManager.addNewSubTask(subtask);
+        int id = subtask.getId();
+        URI uriGet = URI.create("http://localhost:8080/tasks/subtask/?id=" + id);
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
+        HttpRequest request = requestBuilder
+                .GET()
+                .uri(uriGet)
+                .build();
+        HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
+        HttpResponse<String> response = client.send(request, handler);
+        assertEquals(200, response.statusCode());
+        Type type = new TypeToken<Subtask>() {
+        }.getType();
+        Subtask actual = gson.fromJson(response.body(), type);
+        assertNotNull(actual, "Субтаски не возвращаются");
+        assertEquals(subtask, actual, "Субтаски не совпадают");
+    }
+
 
     @Test
     public void shouldBeTestPostSubtask() throws IOException, InterruptedException {
@@ -409,6 +466,85 @@ public class HttpTaskServerEndpointTest {
         HashMap<Integer, Subtask> actual = gson.fromJson(response.body(), type);
         assertNotNull(actual, "Субтаски не возвращаются");
         assertEquals(0, actual.size(), "Количество Субтасков неверное");
+    }
+
+    @Test
+    public void shouldBeTestGetSubtaskByEpicID() throws IOException, InterruptedException {
+        Epic epic = new Epic("TestEpic", "TestEpicDesc");
+        taskManager.addNewEpic(epic);
+        int epicId = epic.getId();
+        Subtask subtask1 = new Subtask("TestSubtask1", "TestSubtask1Disc", epic.getId(), Status.DONE);
+        taskManager.addNewSubTask(subtask1);
+        Subtask subtask2 = new Subtask("TestSubtask2", "TestSubtask2Disc", epic.getId(), Status.DONE);
+        taskManager.addNewSubTask(subtask2);
+        URI uriGet = URI.create("http://localhost:8080/tasks/subtask/epic/?id=" + epicId);
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
+        HttpRequest request = requestBuilder
+                .GET()
+                .uri(uriGet)
+                .build();
+        HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
+        HttpResponse<String> response = client.send(request, handler);
+        assertEquals(200, response.statusCode());
+        Type type = new TypeToken<ArrayList<Subtask>>() {
+        }.getType();
+        List<Subtask> actual = gson.fromJson(response.body(), type);
+        assertNotNull(actual, "Субтаски не возвращаются");
+        assertEquals(subtask1, actual.get(0), "Субтаски не совпадают");
+        assertEquals(actual.size(), 2, "Количество Субтасков не совпадает");
+    }
+
+    @Test
+    public void shouldBeTestGetHistory() throws IOException, InterruptedException {
+        Task task = new Task("TestTask", "TestTaskDisc");
+        taskManager.addNewTask(task);
+        Epic epic = new Epic("TestEpic", "TestEpicDisc");
+        taskManager.addNewEpic(epic);
+        Subtask subtask = new Subtask("TestSubtask", "TestSubtaskDisc", epic.getId());
+        taskManager.addNewSubTask(subtask);
+        taskManager.getSubtaskById(subtask.getId());
+        taskManager.getEpicById(epic.getId());
+        taskManager.getTaskById(task.getId());
+        URI uri = URI.create("http://localhost:8080/tasks/history");
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
+        HttpRequest request = requestBuilder.GET().uri(uri).build();
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
+        HttpResponse<String> response = client.send(request, handler);
+        assertEquals(200, response.statusCode());
+        Type type = new TypeToken<List<Task>>() {
+        }.getType();
+        List<Task> actual = gson.fromJson(response.body(), type);
+        assertNotNull(actual, "История не возвращается");
+        assertEquals(3, actual.size());
+    }
+
+    @Test
+    public void shouldBeTestGetAllTask() throws IOException, InterruptedException {
+        Task task = new Task("TestTask", "TestTaskDisc",
+                LocalDateTime.of(2022, 9, 10, 10, 1, 1), 10);
+        taskManager.addNewTask(task);
+        Epic epic = new Epic("TestEpic", "TestEpicDisc");
+        taskManager.addNewEpic(epic);
+        Subtask subtask = new Subtask("TestSubtask", "TestSubtaskDisc", epic.getId(),
+                LocalDateTime.of(2022, 9, 10, 9, 1, 1), 10);
+        taskManager.addNewSubTask(subtask);
+        taskManager.getEpicById(epic.getId());
+        taskManager.getTaskById(task.getId());
+        taskManager.getSubtaskById(subtask.getId());
+        URI uri = URI.create("http://localhost:8080/tasks/");
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
+        HttpRequest request = requestBuilder.GET().uri(uri).build();
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
+        HttpResponse<String> response = client.send(request, handler);
+        assertEquals(200, response.statusCode());
+        Type type = new TypeToken<List<Subtask>>() {
+        }.getType();
+        List<Subtask> actual = gson.fromJson(response.body(), type);
+        assertNotNull(actual, "Список всех задач не возвращается");
+        assertEquals(2, actual.size());
+        assertEquals(subtask, actual.get(0), "Запись по времени неверная");
     }
 
 

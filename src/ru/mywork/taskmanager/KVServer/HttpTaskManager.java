@@ -8,8 +8,10 @@ import ru.mywork.taskmanager.model.Task;
 import ru.mywork.taskmanager.model.TypeTask;
 import ru.mywork.taskmanager.service.FileBackedTaskManager;
 import ru.mywork.taskmanager.service.Managers;
+import ru.mywork.taskmanager.service.TaskManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,8 +34,8 @@ public class HttpTaskManager extends FileBackedTaskManager {
         }
     }
 
-    protected void addTasks(List<? extends Task> tasks) {
-        for (Task task : tasks) {
+    protected void addTasks(HashMap<Integer,? extends Task> tasks) {
+        for (Task task : tasks.values()) {
             final int id = task.getId();
             if (id > generatorId) {
                 setGeneratorId(id);
@@ -51,25 +53,28 @@ public class HttpTaskManager extends FileBackedTaskManager {
         }
     }
 
-    public void load() {
-        ArrayList<Task> tasks = gson.fromJson(client.load("tasks"), new TypeToken<ArrayList<Task>>() {
-        }.getType());
+    public HttpTaskManager load() {
+        HttpTaskManager loadedTaskManager = new HttpTaskManager(8078);
+        HashMap<Integer,Task> tasks = getTasks(); //gson.fromJson(client.load("tasks"), new TypeToken<HashMap<Integer,Task>>() {
+        //}.getType());
         addTasks(tasks);
 
-        ArrayList<Epic> epics = gson.fromJson(client.load("epics"), new TypeToken<ArrayList<Epic>>() {
-        }.getType());
+        HashMap<Integer,Epic> epics = getEpics();//gson.fromJson(client.load("epics"), new TypeToken< HashMap<Integer,Epic>>() {
+        //}.getType());
         addTasks(epics);
 
-        ArrayList<Subtask> subtasks = gson.fromJson(client.load("subtasks"), new TypeToken<ArrayList<Subtask>>() {
-        }.getType());
+        HashMap<Integer,Subtask> subtasks = getSubtasks();// = gson.fromJson(client.load("subtasks"), new TypeToken< HashMap<Integer,Subtask>>() {
+      //  }.getType());
         addTasks(subtasks);
 
-        List<Integer> history = gson.fromJson(client.load("history"), new TypeToken<ArrayList<Integer>>() {
-        }.getType());
-        for (Integer taskId : history) {
-            addByTypeTaskForLoad(taskId);
+        List<Task> history =getHistory(); //gson.fromJson(client.load("history"), new TypeToken<ArrayList<Integer>>() {
+       // }.getType());
+        for (Task taskId : history) {
+            addByTypeTaskForLoad(taskId.getId());
         }
+        return loadedTaskManager;
     }
+
 
     private void addByTypeTaskForLoad(Integer taskId) {
         if (tasks.containsKey(taskId)) {
@@ -97,5 +102,9 @@ public class HttpTaskManager extends FileBackedTaskManager {
 
     public int getGeneratorId() {
         return generatorId;
+    }
+
+    public String clientKey(){
+        return client.getApiToken();
     }
 }

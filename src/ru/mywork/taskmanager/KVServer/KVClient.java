@@ -68,5 +68,7 @@ public class KVClient {
         }
     }
 
-
+    public String getApiToken() {
+        return apiToken;
+    }
 }
