@@ -101,10 +101,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         //System.out.println("----История----");
         for (Integer task : historyInt) {
             if (tasks.containsKey(task)) {
-              //  System.out.println(tasks.get(task));
+                //  System.out.println(tasks.get(task));
                 historyManager.add(tasks.get(task));
             } else if (epics.containsKey(task)) {
-               // System.out.println(epics.get(task));
+                // System.out.println(epics.get(task));
                 historyManager.add(epics.get(task));
             } else if (subtasks.containsKey(task)) {
                 //System.out.println(subtasks.get(task));
@@ -346,6 +346,5 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return Objects.hash(file);
     }
 }
-
 
 

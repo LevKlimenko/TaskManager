@@ -51,17 +51,17 @@ public class KVClient {
     }
 
     public void put(String key, String value) throws IOException, InterruptedException {
-       /* try {*/
-            final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(value);
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url + "save/" + key + "?API_TOKEN=" + apiToken))
-                    .POST(body)
-                    .build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        /* try {*/
+        final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(value);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url + "save/" + key + "?API_TOKEN=" + apiToken))
+                .POST(body)
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             /*if (response.statusCode() != 200) {
                 throw (new ManagerSaveException("Невозможно выполнить запрос, код статуса: " + response.statusCode()));
             }*/
-            //return response.body();
+        //return response.body();
        /* } catch (IOException | InterruptedException e) {
             throw new ManagerSaveException("Невозможно выполнить запрос " + e.getMessage());
         }*/

@@ -54,7 +54,7 @@ public class KVServer {
                 String response=data.get(key);
                 sendText(h, response);
                 System.out.println("Значение для ключа " + key + " успешно отправлено в ответ на запрос!");
-               } else {
+            } else {
                 System.out.println("/load ждет GET-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
             }
