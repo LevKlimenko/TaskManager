@@ -1,27 +1,18 @@
 package ru.mywork.taskmanager.service;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
 import ru.mywork.taskmanager.errors.CollisionTaskException;
-import ru.mywork.taskmanager.model.Task;
 import ru.mywork.taskmanager.model.Epic;
 import ru.mywork.taskmanager.model.Subtask;
+import ru.mywork.taskmanager.model.Task;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static ru.mywork.taskmanager.model.Status.*;
 
-abstract class TaskManagerTest<T extends TaskManager> {
+abstract class TaskManagerTest<T extends TaskManager>{
     protected T taskManager;
-
-    abstract T createTaskManager() throws IOException;
-
-    @BeforeEach
-    private void updateTaskManager() throws IOException {
-        taskManager = createTaskManager();
-    }
 
     @Test
     public void shouldBeTestsTask() {

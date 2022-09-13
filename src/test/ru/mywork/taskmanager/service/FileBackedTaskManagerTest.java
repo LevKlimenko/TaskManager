@@ -17,9 +17,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     private File file;
 
     @BeforeEach
-    FileBackedTaskManager createTaskManager() {
+    void setUp() {
         file = new File("test.csv");
-        return new FileBackedTaskManager(file);
+        taskManager = new FileBackedTaskManager(file);
     }
 
     @AfterEach

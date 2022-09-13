@@ -1,19 +1,19 @@
 package ru.mywork.taskmanager.service;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import ru.mywork.taskmanager.model.Task;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class HistoryManagerTest {
     private HistoryManager historyManager;
 
-    @BeforeEach
-    void beforeEach() {
+    @BeforeAll
+    void before() {
         historyManager = new InMemoryHistoryManager();
     }
 
