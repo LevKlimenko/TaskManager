@@ -11,11 +11,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
 public class HttpTaskManager extends FileBackedTaskManager {
-    private final Gson gson;
+    // private final Gson gson;
     private final KVClient client;
     private String key;
 
@@ -26,48 +27,51 @@ public class HttpTaskManager extends FileBackedTaskManager {
     public HttpTaskManager(int port, String key) {
         super(null);
         this.key = key;
-        gson = Managers.getGson();
+        //  gson = Managers.getGson();
         client = new KVClient(port);
-       // if (load) {
-         //   load();
+        // if (load) {
+        //   load();
+    }
+
+    public static HttpTaskManager loadFromServer(int port, String key) {
+        HttpTaskManager htm = new HttpTaskManager(port, key);
+        String content = htm.client.load(key);
+        String[] tasksAndHistory = content.split("\n\n");
+        String[] tasks = tasksAndHistory[0].split("\n");
+        for (int i = 1; i < tasks.length; i++) {
+            Task task = htm.fromString(tasks[i]);
+            htm.loadTask(task);
         }
-   // }
-
-    public static HttpTaskManager loadFromServer(int port, String key){
-    HttpTaskManager htm = new HttpTaskManager(port,key);
-    String content = htm.client.load(key);
-    String[] tasksAndHistory = content.split("\n\n");
-    String[] tasks = tasksAndHistory[0].split("\n");
-    for (int i=1;i<tasks.length;i++){
-       Task task = htm.fromString(tasks[i]);
-        htm.loadTask(task);
+        if (tasksAndHistory.length > 1) {
+            String history = tasksAndHistory[1];
+            htm.historyFromString(history);
+        }
+        htm.save();
+        return htm;
     }
-    if (tasksAndHistory.length>1){
-        String history = tasksAndHistory[1];
-        htm.historyFromString(history);
-    }
-    htm.save();
-    return htm;
-     }
 
-     public void save() {
+    public void save() {
         StringBuilder sb = new StringBuilder();
         sb.append(TABLE_HEADER);
-        for (Task task : getTasks().values()){
+        for (Task task : getTasks().values()) {
             sb.append(task.toStringInFile()).append("\n");
         }
-        for (Epic epic:getEpics().values()){
+        for (Epic epic : getEpics().values()) {
             sb.append(epic.toStringInFile()).append("\n");
         }
-        for (Subtask subtask : getSubtasks().values()){
+        for (Subtask subtask : getSubtasks().values()) {
             sb.append(subtask.toStringInFile()).append("\n");
         }
         sb.append("\n");
-        if (getHistory().size()!=0){
+        if (getHistory().size() != 0) {
             sb.append(historyToString(historyManager));
         }
-         client.put(key,sb.toString());
-     }
+        try {
+            client.put(key, sb.toString());
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 
@@ -141,7 +145,7 @@ public class HttpTaskManager extends FileBackedTaskManager {
         return generatorId;
     }
 
-    public String clientKey(){
+    public String clientKey() {
         return client.getApiToken();
     }
 

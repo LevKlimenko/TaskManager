@@ -40,26 +40,29 @@ public class KVServer {
                 return;
             }
             if ("GET".equals(h.getRequestMethod())) {
-                String key = h.getRequestURI().getPath().substring("/sava/".length());
+                String key = h.getRequestURI().getPath().substring("/load/".length());
                 if (key.isEmpty()) {
-                    System.out.println("Key для сохранения пустой. Key указывается в пути: /sava/{key}");
+                    System.out.println("Key для сохранения пустой. Key указывается в пути: /load/{key}");
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
-                if (data.containsKey(key)) {
+                if (data.get(key)==null) {
                     System.out.println("Не могу достать данные для ключа '" + key + "', данные отсутствуют");
                     h.sendResponseHeaders(404, 0);
                     return;
                 }
-                sendText(h, data.get(key));
+                String response=data.get(key);
+                sendText(h, response);
                 System.out.println("Значение для ключа " + key + " успешно отправлено в ответ на запрос!");
-                h.sendResponseHeaders(200, 0);
-            } else {
-                System.out.println("/save ждет GET-запрос, а получил: " + h.getRequestMethod());
+               } else {
+                System.out.println("/load ждет GET-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+        finally {
+            h.close();
         }
     }
 

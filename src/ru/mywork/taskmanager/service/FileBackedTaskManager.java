@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -97,20 +98,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private void getHistoryFromFile(List<Integer> historyInt) {
-        System.out.println("----История----");
+        //System.out.println("----История----");
         for (Integer task : historyInt) {
             if (tasks.containsKey(task)) {
-                System.out.println(tasks.get(task));
+              //  System.out.println(tasks.get(task));
                 historyManager.add(tasks.get(task));
             } else if (epics.containsKey(task)) {
-                System.out.println(epics.get(task));
+               // System.out.println(epics.get(task));
                 historyManager.add(epics.get(task));
             } else if (subtasks.containsKey(task)) {
-                System.out.println(subtasks.get(task));
+                //System.out.println(subtasks.get(task));
                 historyManager.add(subtasks.get(task));
             }
         }
-        System.out.println("----Конец----");
+        //System.out.println("----Конец----");
     }
 
     protected void save() {
@@ -332,6 +333,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FileBackedTaskManager that = (FileBackedTaskManager) o;
+        return Objects.equals(file, that.file);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(file);
+    }
 }
 
 
