@@ -132,7 +132,7 @@ public class HttpTaskServerEndpointTest {
         HttpRequest request = requestBuilder.uri(uri).POST(body).build();
         HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
         HttpResponse<String> response = client.send(request, handler);
-        assertEquals(201, response.statusCode());
+        assertEquals(200, response.statusCode());
         assertEquals("TestTaskUpdate", taskManager.getTaskById(1).getName(), "Неверное название задачи");
         assertEquals(Status.NEW, taskManager.getTaskById(1).getStatus(), "Неверный статус задачи");
     }
@@ -247,7 +247,7 @@ public class HttpTaskServerEndpointTest {
         HttpRequest request = requestBuilder.uri(uri).POST(body).build();
         HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
         HttpResponse<String> response = client.send(request, handler);
-        assertEquals(201, response.statusCode());
+        assertEquals(200, response.statusCode());
         assertEquals("TestEpicUpdate", taskManager.getEpicById(1).getName(), "Неверное название Эпика");
     }
 
@@ -378,7 +378,7 @@ public class HttpTaskServerEndpointTest {
         HttpRequest request = requestBuilder.uri(uri).POST(body).build();
         HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
         HttpResponse<String> response = client.send(request, handler);
-        assertEquals(201, response.statusCode());
+        assertEquals(200, response.statusCode());
         assertEquals("TestSubtaskUpdate", taskManager.getSubtaskById(id).getName(), "Неверное название Субтаска");
     }
 
