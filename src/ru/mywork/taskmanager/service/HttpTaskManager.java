@@ -55,11 +55,8 @@ public class HttpTaskManager extends FileBackedTaskManager {
         if (getHistory().size() != 0) {
             sb.append(historyToString(historyManager));
         }
-        try {
-            client.put(key, sb.toString());
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
-        }
+
+        client.put(key, sb.toString());
     }
 
     public int getGeneratorId() {

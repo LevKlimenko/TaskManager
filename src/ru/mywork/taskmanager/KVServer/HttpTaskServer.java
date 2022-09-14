@@ -53,6 +53,7 @@ public class HttpTaskServer {
                     if (!httpExchange.getRequestMethod().equals("GET")) {
                         System.out.println("/ Ждёт GET-запрос, а получил: " + httpExchange.getRequestMethod());
                         httpExchange.sendResponseHeaders(405, 0);
+                        return;
                     }
                     System.out.println("Получены все задачи");
                     final String response = gson.toJson(taskManager.getSortedTasks());
@@ -149,7 +150,7 @@ public class HttpTaskServer {
                 if (taskManager.getTasks().containsKey(id)) {
                     taskManager.updateTask(task);
                     System.out.println("Обновили задачу id=" + id);
-                    httpExchange.sendResponseHeaders(201, 0);
+                    httpExchange.sendResponseHeaders(200, 0);
                 } else {
                     taskManager.addNewTask(task);
                     System.out.println("Добавлена новая задача id=" + task.getId());
@@ -219,7 +220,7 @@ public class HttpTaskServer {
                 if (taskManager.getEpics().containsKey(id)) {
                     taskManager.updateEpic(epic);
                     System.out.println("Обновили Эпик id=" + id);
-                    httpExchange.sendResponseHeaders(201, 0);
+                    httpExchange.sendResponseHeaders(200, 0);
                 } else {
                     taskManager.addNewEpic(epic);
                     System.out.println("Добавлен новый Эпик id=" + epic.getId());
@@ -289,7 +290,7 @@ public class HttpTaskServer {
                 if (taskManager.getSubtasks().containsKey(id)) {
                     taskManager.updateSubtask(subtask);
                     System.out.println("Обновили Сабтаск id=" + id);
-                    httpExchange.sendResponseHeaders(201, 0);
+                    httpExchange.sendResponseHeaders(200, 0);
                 } else {
                     taskManager.addNewSubTask(subtask);
                     System.out.println("Добавлен новый Сабтаск id=" + subtask.getId());

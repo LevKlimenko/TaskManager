@@ -11,21 +11,22 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class Managers {
+    static final GsonBuilder gsonBuilder = new GsonBuilder()
+            .setPrettyPrinting()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
 
 
-    public static TaskManager getDefault() throws IOException {
-        return new HttpTaskManager(KVServer.PORT);}
+    public static TaskManager getDefault() {
+        return new HttpTaskManager(KVServer.PORT);
+    }
 
-    public static KVServer getDefaultKVServer() throws IOException{
+    public static KVServer getDefaultKVServer() throws IOException {
         final KVServer kvServer = new KVServer();
         kvServer.start();
         return kvServer;
     }
 
-    public static Gson getGson(){
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setPrettyPrinting();
-        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
+    public static Gson getGson() {
         return gsonBuilder.create();
     }
 

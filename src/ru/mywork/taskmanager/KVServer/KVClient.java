@@ -11,7 +11,7 @@ import java.net.http.HttpResponse;
 public class KVClient {
     private final HttpClient client = HttpClient.newHttpClient();
     private final String url;
-    private String apiToken;
+    private final String apiToken;
 
     public KVClient(int port) {
         url = "http://localhost:" + port + "/";
@@ -50,13 +50,17 @@ public class KVClient {
         }
     }
 
-    public void put(String key, String value) throws IOException, InterruptedException {
+    public void put(String key, String value){
         final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(value);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url + "save/" + key + "?API_TOKEN=" + apiToken))
                 .POST(body)
                 .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        try {
+            HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getUrl() {

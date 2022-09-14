@@ -41,7 +41,7 @@ public class HttpTaskServerEndpointTest {
     @BeforeEach
     void setUp() throws Exception {
         kvServer = Managers.getDefaultKVServer();
-        taskManager = new FileBackedTaskManager(new File("test.csv"));
+        taskManager = new HttpTaskManager(8078);
         server = new HttpTaskServer(taskManager);
         client = HttpClient.newHttpClient();
         server.start();
