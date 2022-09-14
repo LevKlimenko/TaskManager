@@ -9,7 +9,7 @@ public class Task {
     static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
     protected String name;
     protected String description;
-    protected int id;
+    protected Integer id;
     protected Status status;
     protected int duration;
     protected LocalDateTime startTime;
@@ -112,7 +112,7 @@ public class Task {
         this.description = description;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

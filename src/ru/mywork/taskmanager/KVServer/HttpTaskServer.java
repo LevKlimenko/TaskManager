@@ -22,7 +22,7 @@ public class HttpTaskServer {
 
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private static final String HOST_NAME = "localhost";
-    public static int PORT = 8080;
+    public static final int PORT = 8080;
     private static Gson gson;
     private final HttpServer httpServer;
     private final TaskManager taskManager;
@@ -49,17 +49,9 @@ public class HttpTaskServer {
             System.out.println("\n/tasks: " + httpExchange.getRequestURI());
             final String path = httpExchange.getRequestURI().getPath().substring(7);
             switch (path) {
-                case "": {
-                    if (!httpExchange.getRequestMethod().equals("GET")) {
-                        System.out.println("/ Ждёт GET-запрос, а получил: " + httpExchange.getRequestMethod());
-                        httpExchange.sendResponseHeaders(405, 0);
-                        return;
-                    }
-                    System.out.println("Получены все задачи");
-                    final String response = gson.toJson(taskManager.getSortedTasks());
-                    sendText(httpExchange, response);
-                }
-                break;
+                case "":
+                    emptyHandle(httpExchange);
+                    break;
                 case "task/":
                     handleTask(httpExchange);
                     break;
@@ -72,17 +64,9 @@ public class HttpTaskServer {
                 case "epic/":
                     handleEpic(httpExchange);
                     break;
-                case "history": {
-                    if (httpExchange.getRequestMethod().equals("GET")) {
-                        System.out.println("Получена история");
-                        final String response = gson.toJson(taskManager.getHistory());
-                        sendText(httpExchange, response);
-                    } else {
-                        System.out.println("/history Ждёт GET-запрос, а получил: " + httpExchange.getRequestMethod());
-                        httpExchange.sendResponseHeaders(405, 0);
-                    }
-                }
-                break;
+                case "history":
+                    historyHandle(httpExchange);
+                    break;
                 default: {
                     System.out.println("Неизвестный запрос: " + httpExchange.getRequestURI());
                     httpExchange.sendResponseHeaders(404, 0);
@@ -92,6 +76,17 @@ public class HttpTaskServer {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void emptyHandle(HttpExchange httpExchange) throws Exception {
+        if (!httpExchange.getRequestMethod().equals("GET")) {
+            System.out.println("/ Ждёт GET-запрос, а получил: " + httpExchange.getRequestMethod());
+            httpExchange.sendResponseHeaders(405, 0);
+            return;
+        }
+        System.out.println("Получены все задачи");
+        final String response = gson.toJson(taskManager.getSortedTasks());
+        sendText(httpExchange, response);
     }
 
     private void handleTask(HttpExchange httpExchange) throws Exception {
@@ -147,7 +142,7 @@ public class HttpTaskServer {
                 }
                 final Task task = gson.fromJson(json, Task.class);
                 final Integer id = task.getId();
-                if (taskManager.getTasks().containsKey(id)) {
+                if (id != null) {
                     taskManager.updateTask(task);
                     System.out.println("Обновили задачу id=" + id);
                     httpExchange.sendResponseHeaders(200, 0);
@@ -217,7 +212,7 @@ public class HttpTaskServer {
                 }
                 final Epic epic = gson.fromJson(json, Epic.class);
                 final Integer id = epic.getId();
-                if (taskManager.getEpics().containsKey(id)) {
+                if (id != null) {
                     taskManager.updateEpic(epic);
                     System.out.println("Обновили Эпик id=" + id);
                     httpExchange.sendResponseHeaders(200, 0);
@@ -287,7 +282,7 @@ public class HttpTaskServer {
                 }
                 final Subtask subtask = gson.fromJson(json, Subtask.class);
                 final Integer id = subtask.getId();
-                if (taskManager.getSubtasks().containsKey(id)) {
+                if (id != null) {
                     taskManager.updateSubtask(subtask);
                     System.out.println("Обновили Сабтаск id=" + id);
                     httpExchange.sendResponseHeaders(200, 0);
@@ -320,6 +315,17 @@ public class HttpTaskServer {
             }
         } else {
             System.out.println("/subtask/epic/ ждет GET-запрос, а получил " + httpExchange.getRequestMethod());
+            httpExchange.sendResponseHeaders(405, 0);
+        }
+    }
+
+    private void historyHandle(HttpExchange httpExchange) throws Exception {
+        if (httpExchange.getRequestMethod().equals("GET")) {
+            System.out.println("Получена история");
+            final String response = gson.toJson(taskManager.getHistory());
+            sendText(httpExchange, response);
+        } else {
+            System.out.println("/history Ждёт GET-запрос, а получил: " + httpExchange.getRequestMethod());
             httpExchange.sendResponseHeaders(405, 0);
         }
     }

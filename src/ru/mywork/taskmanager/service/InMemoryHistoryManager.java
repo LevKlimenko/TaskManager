@@ -18,7 +18,7 @@ class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void remove(int id) {
+    public void remove(Integer id) {
         if (customLinkedList.containsKey(id)) {
             removeNode(customLinkedList.get(id));
         }

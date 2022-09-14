@@ -21,6 +21,7 @@ public class HistoryManagerTest {
     @Test
     public void testAdd() {
         Task task = new Task("task", "task descr");
+        task.setId(1);
         historyManager.add(task);
         final List<Task> history = historyManager.getHistory();
         assertNotNull(history, "История не пустая");
@@ -31,8 +32,12 @@ public class HistoryManagerTest {
     @Test
     public void testRemove() {
         Task task = new Task("task", "task descr");
+        Task task1 = new Task("task1", "task descr1");
+        task1.setId(1);
         historyManager.add(task);
+        historyManager.add(task1);
         historyManager.remove(task.getId());
+        historyManager.remove(task1.getId());
         final List<Task> history = historyManager.getHistory();
         assertEquals(0, history.size(), "История не пустая");
     }

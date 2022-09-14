@@ -378,10 +378,8 @@ public class InMemoryTaskManager implements TaskManager {
                 if (!task.getEndTime().isAfter(sortedTask.getStartTime())) {
                     continue;
                 }
-                System.out.println("Новая задача " + task.getName() +
-                        " совпадает по времени с " + sortedTask.getName());//для консольного вывода с сервером
-                throw new CollisionTaskException("Новая задача " + task.getName() +
-                        " совпадает по времени с " + sortedTask.getName());
+                System.out.println("Новая задача " + task.getName() + " совпадает по времени с " + sortedTask.getName());//для консольного вывода с сервером
+                throw new CollisionTaskException("Новая задача " + task.getName() + " совпадает по времени с " + sortedTask.getName());
             }
         }
     }
@@ -391,12 +389,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         InMemoryTaskManager that = (InMemoryTaskManager) o;
-        return generatorId == that.generatorId &&
-                Objects.equals(epics, that.epics) &&
-                Objects.equals(subtasks, that.subtasks) &&
-                Objects.equals(tasks, that.tasks) &&
-                Objects.equals(historyManager, that.historyManager) &&
-                Objects.equals(sortedTasks, that.sortedTasks);
+        return generatorId == that.generatorId && Objects.equals(epics, that.epics) && Objects.equals(subtasks, that.subtasks) && Objects.equals(tasks, that.tasks) && Objects.equals(historyManager, that.historyManager) && Objects.equals(sortedTasks, that.sortedTasks);
     }
 
     @Override

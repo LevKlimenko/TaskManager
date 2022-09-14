@@ -50,7 +50,7 @@ public class KVClient {
         }
     }
 
-    public void put(String key, String value){
+    public void put(String key, String value) {
         final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(value);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url + "save/" + key + "?API_TOKEN=" + apiToken))
