@@ -1,17 +1,14 @@
 package ru.mywork.taskmanager.KVServer;
 
-import com.google.gson.Gson;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.mywork.taskmanager.model.Epic;
 import ru.mywork.taskmanager.model.Subtask;
-import ru.mywork.taskmanager.model.Task;
-import ru.mywork.taskmanager.service.FileBackedTaskManager;
+import ru.mywork.taskmanager.service.HttpTaskManager;
 import ru.mywork.taskmanager.service.Managers;
 import ru.mywork.taskmanager.service.TaskManager;
 
-import java.io.File;
 import java.net.http.HttpClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,7 +25,7 @@ public class HttpTaskServerEpicTest {
     @BeforeEach
     public void setUp() throws Exception {
         kvServer = Managers.getDefaultKVServer();
-        taskManager = new FileBackedTaskManager(new File("test.csv"));
+        taskManager = new HttpTaskManager(8078);
         server = new HttpTaskServer(taskManager);
         client = HttpClient.newHttpClient();
         server.start();

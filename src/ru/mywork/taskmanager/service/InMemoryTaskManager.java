@@ -47,9 +47,6 @@ public class InMemoryTaskManager implements TaskManager {
         checkTimeTask(task);
         int id = ++generatorId;
         task.setId(id);
-        // if (task.getStatus() == null) {
-        //   task.setStatus(Status.NEW);
-        //  }
         sortedTasks.add(task);
         tasks.put(id, task);
     }

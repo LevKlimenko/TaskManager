@@ -15,7 +15,6 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class HttpTaskServer {
     private final HttpServer httpServer;
     private final TaskManager taskManager;
 
-    public  HttpTaskServer() throws IOException {
+    public HttpTaskServer() throws IOException {
         this(Managers.getDefault());
     }
 
@@ -44,7 +43,6 @@ public class HttpTaskServer {
         final HttpTaskServer server = new HttpTaskServer(Managers.getDefault());
         server.start();
     }
-
 
     private void handler(HttpExchange httpExchange) {
         try {
@@ -155,9 +153,7 @@ public class HttpTaskServer {
                 } else {
                     taskManager.addNewTask(task);
                     System.out.println("Добавлена новая задача id=" + task.getId());
-                    //final String response = gson.toJson(task);
                     httpExchange.sendResponseHeaders(201, 0);
-                    //sendText(httpExchange, response);
                 }
             }
             break;
@@ -227,8 +223,6 @@ public class HttpTaskServer {
                 } else {
                     taskManager.addNewEpic(epic);
                     System.out.println("Добавлен новый Эпик id=" + epic.getId());
-                    //final String response = gson.toJson(epic);
-                    //sendText(httpExchange, response);
                     httpExchange.sendResponseHeaders(201, 0);
                 }
             }
@@ -299,9 +293,7 @@ public class HttpTaskServer {
                 } else {
                     taskManager.addNewSubTask(subtask);
                     System.out.println("Добавлен новый Сабтаск id=" + subtask.getId());
-                    //final String response = gson.toJson(subtask);
-                    //sendText(httpExchange, response);
-                    httpExchange.sendResponseHeaders(201,0);
+                    httpExchange.sendResponseHeaders(201, 0);
                 }
             }
             break;
@@ -321,9 +313,9 @@ public class HttpTaskServer {
                 final String response = gson.toJson(subtaskByEpicId);
                 System.out.println("Получили все Сабтаски у EpicId=" + id);
                 sendText(httpExchange, response);
-            }else {
-                System.out.println("Отсутствует Эпик с id="+ id);
-                httpExchange.sendResponseHeaders(404,0);
+            } else {
+                System.out.println("Отсутствует Эпик с id=" + id);
+                httpExchange.sendResponseHeaders(404, 0);
             }
         } else {
             System.out.println("/subtask/epic/ ждет GET-запрос, а получил " + httpExchange.getRequestMethod());
@@ -341,7 +333,6 @@ public class HttpTaskServer {
 
     private String readText(HttpExchange httpExchange) throws IOException {
         InputStream is = httpExchange.getRequestBody();
-        // httpExchange.sendResponseHeaders(201, 0);
         return new String(is.readAllBytes(), DEFAULT_CHARSET);
     }
 
@@ -349,18 +340,6 @@ public class HttpTaskServer {
         System.out.println("Запускаем HttpTaskServer на порту " + PORT);
         System.out.println("Открой в браузере http://localhost:" + PORT + "/");
         httpServer.start();
-        /*Task task = new Task("TestTask", "TestTaskDisc",
-                LocalDateTime.of(2022,9,10,10,1,1),10);
-        taskManager.addNewTask(task);
-        Epic epic = new Epic("TestEpic","TestEpicDisc");
-        taskManager.addNewEpic(epic);
-        Subtask subtask = new Subtask("TestSubtask", "TestSubtaskDisc", epic.getId(),
-                LocalDateTime.of(2022,9,10,9,1,1),10);
-        taskManager.addNewSubTask(subtask);
-        taskManager.getEpicById(epic.getId());
-        taskManager.getTaskById(task.getId());
-        taskManager.getSubtaskById(subtask.getId());*/
-
     }
 
     public void stop() {

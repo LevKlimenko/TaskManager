@@ -30,26 +30,26 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     }
 
     @Test
-    void shouldBeTestSaveEmptyTaskToServer() {
+    void shouldBeTestSaveEmptyTasksToServer() {
         taskManager.save();
         HttpTaskManager restoredManager = HttpTaskManager.loadFromServer(8078, key);
         assertEquals(taskManager, restoredManager, "Менеджеры не совпадает");
     }
 
-  @Test
-    void shouldBeTestOnlyTaskAddToServer(){
-        Task task = new Task("TestTask","TestTaskDescr");
+    @Test
+    void shouldBeTestOnlyAddTaskToServer() {
+        Task task = new Task("TestTask", "TestTaskDescr");
         taskManager.addNewTask(task);
-        HttpTaskManager loadedTaskManager = HttpTaskManager.loadFromServer(8078,key);
-        assertEquals(taskManager,loadedTaskManager,"Менеджеры не совпадают");
-      }
+        HttpTaskManager loadedTaskManager = HttpTaskManager.loadFromServer(8078, key);
+        assertEquals(taskManager, loadedTaskManager, "Менеджеры не совпадают");
+    }
 
-     @Test
-    void shouldBeTestAddAndGetTaskServer(){
-          Task task = new Task("TestTask","TestTaskDescr");
-          taskManager.addNewTask(task);
-          taskManager.getTaskById(task.getId());
-          HttpTaskManager loadedTaskManager = HttpTaskManager.loadFromServer(8078,key);
-          assertEquals(taskManager,loadedTaskManager,"Менеджеры не совпадают");
-      }
+    @Test
+    void shouldBeTestAddAndGetTaskAndHistoryServer() {
+        Task task = new Task("TestTask", "TestTaskDescr");
+        taskManager.addNewTask(task);
+        taskManager.getTaskById(task.getId());
+        HttpTaskManager loadedTaskManager = HttpTaskManager.loadFromServer(8078, key);
+        assertEquals(taskManager, loadedTaskManager, "Менеджеры не совпадают");
+    }
 }

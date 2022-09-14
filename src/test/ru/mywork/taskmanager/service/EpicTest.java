@@ -1,22 +1,20 @@
 package ru.mywork.taskmanager.service;
 
-import ru.mywork.taskmanager.model.Epic;
-import ru.mywork.taskmanager.model.Subtask;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.mywork.taskmanager.model.Epic;
+import ru.mywork.taskmanager.model.Subtask;
 
-import java.io.IOException;
-
-import static ru.mywork.taskmanager.model.Status.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static ru.mywork.taskmanager.model.Status.*;
 
 class EpicTest {
     private TaskManager manager;
     private Epic epic;
 
     @BeforeEach
-    public void beforeEach() throws IOException {
-        manager = Managers.getDefault();
+    public void beforeEach(){
+        manager = Managers.getFileBackedTaskManager();
         epic = new Epic("epic", "epic decr");
         manager.addNewEpic(epic);
     }

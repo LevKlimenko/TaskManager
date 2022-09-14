@@ -7,10 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
-   @BeforeEach
-    void setUp(){
-       taskManager = new InMemoryTaskManager();
-  }
+    @BeforeEach
+    void setUp() {
+        taskManager = new InMemoryTaskManager();
+    }
 
 
     @Test

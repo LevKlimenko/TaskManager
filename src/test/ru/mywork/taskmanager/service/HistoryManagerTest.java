@@ -1,6 +1,6 @@
 package ru.mywork.taskmanager.service;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.mywork.taskmanager.model.Task;
 
@@ -12,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class HistoryManagerTest {
     private HistoryManager historyManager;
 
-    @BeforeAll
-    void before() {
+    @BeforeEach
+    void setUp() {
         historyManager = new InMemoryHistoryManager();
     }
 

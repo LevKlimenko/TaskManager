@@ -10,9 +10,7 @@ import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-/**
- * Постман: https://www.getpostman.com/collections/a83b61d9e1c81c10575c
- */
+
 public class KVServer {
     public static final int PORT = 8078;
     private final String apiToken;
@@ -26,10 +24,6 @@ public class KVServer {
         server.createContext("/save", this::save);
         server.createContext("/load", this::load);
     }
-
-    //public static void main(String[] args) throws IOException {
-    //    new KVServer().start();
-  //  }
 
     private void load(HttpExchange h) {
         try {
@@ -46,12 +40,12 @@ public class KVServer {
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
-                if (data.get(key)==null) {
+                if (data.get(key) == null) {
                     System.out.println("Не могу достать данные для ключа '" + key + "', данные отсутствуют");
                     h.sendResponseHeaders(404, 0);
                     return;
                 }
-                String response=data.get(key);
+                String response = data.get(key);
                 sendText(h, response);
                 System.out.println("Значение для ключа " + key + " успешно отправлено в ответ на запрос!");
             } else {
@@ -60,8 +54,7 @@ public class KVServer {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-        finally {
+        } finally {
             h.close();
         }
     }

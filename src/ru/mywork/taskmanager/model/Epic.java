@@ -6,8 +6,8 @@ import java.util.Objects;
 
 public class Epic extends Task {
 
-    private LocalDateTime endTime;
     private final ArrayList<Integer> subtaskId = new ArrayList<>();
+    private LocalDateTime endTime;
 
     public Epic(String name, String description) {
         super(name, description);

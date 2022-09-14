@@ -32,13 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class HttpTaskServerEndpointTest {
 
     private HttpTaskServer server;
-    private TaskManager fileManager;
-    private HttpTaskManager httpTaskManager;
     private HttpClient client;
-    private Task task;
-    private Subtask subtask;
-    private Subtask subtask2;
-    private Epic epic;
     private Gson gson = Managers.getGson();
     private KVServer kvServer;
     private TaskManager taskManager;
@@ -51,17 +45,6 @@ public class HttpTaskServerEndpointTest {
         server = new HttpTaskServer(taskManager);
         client = HttpClient.newHttpClient();
         server.start();
-       /* kvServer = Managers.getDefaultKVServer();
-        server = new HttpTaskServer();
-        this.taskManager = new HttpTaskManager(8078);
-        server.start();
-        fileManager = new FileBackedTaskManager(new File("tasks.csv"));
-        Task task = new Task("TestTask","TestTaskDesc");
-       taskManager.addNewTask(task);*/
-        // Epic epic = new Epic("TestEpic", "TestEpicDesc");
-        // taskManager.addNewEpic(epic);
-        //Subtask subtask = new Subtask("TestSubtask", "TestSubtaskDesc",epic.getId());
-        //taskManager.addNewSubTask(subtask);
     }
 
     @AfterEach

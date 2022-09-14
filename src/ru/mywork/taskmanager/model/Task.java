@@ -146,7 +146,7 @@ public class Task {
         return endTime;
     }
 
-    public String getTimeInFormat(LocalDateTime endtime){
+    public String getTimeInFormat(LocalDateTime endtime) {
         return endtime.format(formatter);
     }
 

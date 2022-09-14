@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 import static ru.mywork.taskmanager.model.Status.*;
 
-abstract class TaskManagerTest<T extends TaskManager>{
+abstract class TaskManagerTest<T extends TaskManager> {
     protected T taskManager;
 
     @Test

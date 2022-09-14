@@ -1,22 +1,14 @@
 package ru.mywork.taskmanager.service;
 
-import com.google.gson.Gson;
 import ru.mywork.taskmanager.KVServer.KVClient;
 import ru.mywork.taskmanager.model.Epic;
 import ru.mywork.taskmanager.model.Subtask;
 import ru.mywork.taskmanager.model.Task;
-import ru.mywork.taskmanager.model.TypeTask;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 
 public class HttpTaskManager extends FileBackedTaskManager {
-    // private final Gson gson;
     private final KVClient client;
     private String key;
 
@@ -27,10 +19,7 @@ public class HttpTaskManager extends FileBackedTaskManager {
     public HttpTaskManager(int port, String key) {
         super(null);
         this.key = key;
-        //  gson = Managers.getGson();
         client = new KVClient(port);
-        // if (load) {
-        //   load();
     }
 
     public static HttpTaskManager loadFromServer(int port, String key) {
@@ -73,7 +62,7 @@ public class HttpTaskManager extends FileBackedTaskManager {
         }
     }
 
-        public int getGeneratorId() {
+    public int getGeneratorId() {
         return generatorId;
     }
 
