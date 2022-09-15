@@ -57,54 +57,24 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     }
 
     @Test
-    void shouldBeTestTaskMap() {
-        Task task = new Task("TestTask", "TestTaskDescr");
+    void shouldBeTestAllTasksMap() {
+        Task task = new Task("TestTask", "TestTaskDescr",
+                LocalDateTime.of(2022, 9, 14, 10, 0, 0), 10);
         taskManager.addNewTask(task);
+        Epic epic = new Epic("TestEpic", "TestEpicDiscr");
+        taskManager.addNewEpic(epic);
+        Subtask subtask = new Subtask("TestSubtask", "TestSubtaskDiscr", epic.getId());
+        taskManager.addNewSubTask(subtask);
+        taskManager.getTaskById(task.getId());
+        taskManager.getSubtaskById(subtask.getId());
+        taskManager.getEpicById(epic.getId());
         HttpTaskManager loadedTaskManager = new HttpTaskManager(8078, true);
         assertEquals(taskManager.getTasks(), loadedTaskManager.getTasks(), "Task HashMap не совпадает");
-    }
-
-    @Test
-    void shouldBeTestEpicMap() {
-        Epic epic = new Epic("TestEpic", "TestEpicDiscr");
-        taskManager.addNewEpic(epic);
-        HttpTaskManager loadedTaskManager = new HttpTaskManager(8078, true);
-        assertEquals(taskManager.getEpics(), loadedTaskManager.getEpics(), "Epic HashMap не совпадает");
-    }
-
-    @Test
-    void shouldBeTestEpicAndSubtaskMap() {
-        Epic epic = new Epic("TestEpic", "TestEpicDiscr");
-        taskManager.addNewEpic(epic);
-        Subtask subtask = new Subtask("TestSubtask", "TestSubtaskDiscr", epic.getId());
-        taskManager.addNewSubTask(subtask);
-        HttpTaskManager loadedTaskManager = new HttpTaskManager(8078, true);
         assertEquals(taskManager.getEpics(), loadedTaskManager.getEpics(), "Epic HashMap не совпадает");
         assertEquals(taskManager.getSubtasks(), loadedTaskManager.getSubtasks(), "Subtask HashMap не совпадает");
+        assertEquals(taskManager.getSortedTasks(), loadedTaskManager.getSortedTasks(),
+                "Сортированный список не совпадает");
+        assertEquals(taskManager.getHistory(), loadedTaskManager.getHistory(), "Истории не совпадают");
     }
 
-    @Test
-    void shouldBeTestAllTaskAndSortedList() {
-        Task task = new Task("TestTask", "TestTaskDescr", LocalDateTime.of(2022, 9, 14, 10, 0, 0), 10);
-        taskManager.addNewTask(task);
-        Epic epic = new Epic("TestEpic", "TestEpicDiscr");
-        taskManager.addNewEpic(epic);
-        Subtask subtask = new Subtask("TestSubtask", "TestSubtaskDiscr", epic.getId());
-        taskManager.addNewSubTask(subtask);
-        HttpTaskManager loadedTaskManager = new HttpTaskManager(8078, true);
-        assertEquals(taskManager.getTasks(), loadedTaskManager.getTasks(), "Список всех задач не совпадает");
-        assertEquals(taskManager.getSortedTasks(), loadedTaskManager.getSortedTasks(), "Сортированный список не совпадает");
-    }
-
-    @Test
-    void shouldBeTestgeneratorId() {
-        Task task = new Task("TestTask", "TestTaskDescr", LocalDateTime.of(2022, 9, 14, 10, 0, 0), 10);
-        taskManager.addNewTask(task);
-        Epic epic = new Epic("TestEpic", "TestEpicDiscr");
-        taskManager.addNewEpic(epic);
-        Subtask subtask = new Subtask("TestSubtask", "TestSubtaskDiscr", epic.getId());
-        taskManager.addNewSubTask(subtask);
-        HttpTaskManager loadedTaskManager = new HttpTaskManager(8078, true);
-        assertEquals(taskManager.getGeneratorId(), loadedTaskManager.getGeneratorId(), "Значение generatorId не совпадают");
-    }
 }

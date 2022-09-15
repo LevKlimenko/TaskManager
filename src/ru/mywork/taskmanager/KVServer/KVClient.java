@@ -1,5 +1,6 @@
 package ru.mywork.taskmanager.KVServer;
 
+import ru.mywork.taskmanager.errors.ClientPutException;
 import ru.mywork.taskmanager.errors.ManagerSaveException;
 
 import java.io.IOException;
@@ -58,8 +59,11 @@ public class KVClient {
                 .build();
         try {
             HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
+            if (response.statusCode() != 200) {
+                throw (new ClientPutException("Невозможно выполнить запрос, код статуса: " + response.statusCode()));
+            }
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            throw new ClientPutException("Невозможно выполнить запрос " + e.getMessage());
         }
     }
 
