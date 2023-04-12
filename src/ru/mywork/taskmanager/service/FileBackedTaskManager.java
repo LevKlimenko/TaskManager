@@ -28,49 +28,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return load;
     }
 
-    /*public static void main(String[] args) {
-
-        FileBackedTaskManager manager = new FileBackedTaskManager(new File("tasks.csv"));
-        Task task1 = new Task("Купить корм кошке", "Магазин Лапки", Status.DONE);
-        manager.addNewTask(task1);
-        System.out.println("________________________________________");
-        System.out.println("Работа с эпиком");
-        Epic epic1 = new Epic("Уборка", "Убраться в квартире");
-        manager.addNewEpic(epic1);
-        Subtask subtask1 = new Subtask("Пропылесосить", "Кухня и комната", epic1.getId(),
-                Status.DONE, LocalDateTime.of(2022, 3, 3, 12, 25), 10);
-        manager.addNewSubTask(subtask1);
-        Subtask subtask2 = new Subtask("Мусор", "Выкинуть мусор", epic1.getId(), Status.DONE);
-        manager.addNewSubTask(subtask2);
-        Subtask subtask3 = new Subtask("Посуда", "Помыть посуду", epic1.getId(), Status.DONE);
-        manager.addNewSubTask(subtask3);
-        manager.printById(epic1.getId());
-        manager.printById(subtask1.getId());
-        manager.printById(task1.getId());
-        manager.printById(epic1.getId());
-        manager.printHistory();
-        //manager.generateSortedTasks();
-
-        FileBackedTaskManager managers = FileBackedTaskManager.loadFromFile(new File("tasks.csv"));
-        System.out.println(managers.getHistory());
-        System.out.println(manager.getSortedTasks());
-        System.out.println(managers.getSortedTasks());
-        System.out.println(managers.getHistory());
-        //  Subtask subtask4 = new Subtask("Посуда4", "Помыть посуду", epic1.getId(), Status.DONE,
-        //       LocalDateTime.of(2022, 3, 3, 12, 22), 10);
-        //System.out.println(manager.getHistory());
-        // managers.addNewSubTask(subtask4);
-        //  managers.printById(6);
-        //  Subtask subtask6 = new Subtask("Посуда6", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS);
-        // managers.addNewSubTask(subtask6);
-        //  Subtask subtask5 = new Subtask("Посуда5", "Помыть посуду", epic1.getId(), Status.IN_PROGRESS,
-        //  LocalDateTime.of(2022,3,3,12,31),10);
-        // managers.addNewSubTask(subtask5);
-        // managers.printById(6);
-        //   managers.printById(7);
-        //managers.printById(2);
-    }*/
-
     protected String historyToString(HistoryManager manager) {
         StringBuilder sb = new StringBuilder();
         List<Task> history;
